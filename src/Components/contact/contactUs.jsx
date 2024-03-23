@@ -1,7 +1,7 @@
 const ContactUs = ()=>{
 return (
     <div>
-        Contact us page works
+        Contact us page works, it is from sidd
     </div>
 )
 };
