@@ -1,0 +1,28 @@
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+// import App from './App.jsx';
+// import Home from './Components/home.jsx';
+// import AboutUs from './Components/aboutUs.jsx';
+// import ContactUs from './Components/contactUs.jsx';
+
+// const route = createBrowserRouter([
+//   {
+//     path: '/',
+//     Element: <App />,
+//     children: [
+//       {
+//         path: '',
+//         element: <Home />
+//       },
+//       {
+//         path: 'about',
+//         element: <AboutUs />
+//       },
+//       {
+//         path: 'contact',
+//         element: <ContactUs />
+//       }
+//     ]
+//   }
+// ]);

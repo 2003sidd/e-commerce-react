@@ -1,0 +1,13 @@
+.scrollbar{
+    width: 100%; /* Adjust width as needed */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; 
+}
+.scroll-item{
+    display: inline-block; /* Make content stay in one line */
+    width: 200px; /* Set width of content */
+    height: 200px; /* Set height of content */
+    background-color: lightgray; /* Background color of content */
+    margin: 5px; /* Add some margin for spacing */
+  
+}
