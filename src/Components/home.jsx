@@ -1,56 +1,96 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
+import Card from "./cards/card";
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import './home.css';
-const Home =()=>{
+const Home = () => {
+    const [count, setCount] = useState(0);
+    const [num, setnum] = useState(0);
+    const [inputValue, setInputValue] = useState("");
+    const number1 = useRef("");
 
-    let [b,changeb]=useState(0);
-    let a =6;
-    useEffect(()=>{
-        console.log("hey sid, I am calledddddddddddd");
-    })
-    function addBtn(){
-        a++;
-        changeb(b+1);
-        changeb(b+1);
-        changeb(b+1);
-        console.log("add value is",a);
+    useEffect(() => {
+        console.log(number1)
+        // number1.current = number1.current + 1;
+    });
+
+    useEffect(() => {
+        console.log("I am called", num)
+    }, [count]);
+    function changeCount() {
+        setCount(count => count + 1);
     }
-    function decBtn(){
-        a--;
-        console.log("decrement value is",a)
+    function changenum() {
+        setCount(num => num + 1);
     }
-    function getValue(){
-        console.log("value is",a)
-        console.log("value is",b)
+    const navigation = useNavigate();
+    const slideLeft = () => {
+        let slider = document.getElementById('slider');
+        slider.scrollLeft = slider.scrollLeft - 500;
+    }
+    const slideRight = () => {
+        let slider = document.getElementById('slider');
+        slider.scrollLeft = slider.scrollLeft + 500;
+    }
+
+
+    function naviagate() {
+        const queryParams = { sort: 'price', order: 'asc' };
+        const searchParams = new URLSearchParams(queryParams);
+        console.log(searchParams.toString())
+
+        // naviagate(`/products?${searchParams.toString()}`);
     }
 
     return (
-        <div className="home" style={{height:"300px",backgroundColor:"#5959ff"}}>
-            {/* home page {a} , {b} */}
-            {/* <br />
-            <button onClick={addBtn}>increase value {a} , {b}</button>
-            <br />
-            <button onClick={decBtn}>increase value {a} , {b}</button>
-            <br />
-            <button onClick={getValue}>increase value {a} , {b}</button>
-            <br /> */}
-            <span>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni amet cupiditate provident veniam eius fugiat debitis dicta assumenda soluta impedit deserunt a, nemo minima in saepe non quod, qui ratione?
-            </span>
-            <hr />
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Blanditiis dolores quam veniam ex ratione expedita rem cum! Eos enim dolorum amet sunt sit, voluptatibus quisquam dolor, repellat exercitationem cumque consequatur.</p>
+        <div className="home" >
+            {/*home page image  */}
+            <img src="src/assets/images/home.jpg" className="home-image" />
 
-            <div className="scrollbar">
-                <div className="scroll-item">item1</div>
-                <div className="scroll-item">item2</div>
-                <div className="scroll-item">item3</div>
-                <div className="scroll-item">item4</div>
-                <div className="scroll-item">item5</div>
-                <div className="scroll-item">item6</div>
-                <div className="scroll-item">item7</div>
-                <div className="scroll-item">item8</div>
-                <div className="scroll-item">item9</div>
+
+            <div >
+                {/* <div > <Link to="/siddhant">Siddhant</Link></div> */}
+                <div onClick={changeCount}>Siddhant</div>
+                <div onClick={changenum}>Abhay</div>
+                <div></div>
+                <div></div>
+                  <input
+        type="text"
+        ref={number1}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <h1>Render Count: {number1.current}</h1>
+
             </div>
+
+
+            {/* shoe by collection */}
+            <div className="collection">
+                <div className="men">Men <Link to={"collection/men"}>Men</Link> </div>
+                <div className="women">Women</div>
+            </div>
+
+            {/* home page slider of reccommanded or top product */}
+            <div className="relative flex items-center">
+                <MdChevronLeft size={40} className="cursor-pointer" onClick={slideLeft} />
+                <div id="slider" className="w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide">
+                    <div className="w-[220px] inline-block p-2 cursor-pointer"></div>
+                    <div className="w-[220px] h-[220px] inline-block p-2 cursor-pointer">item2</div>
+                    <div className="w-[220px] inline-block p-2 cursor-pointer">item3</div>
+                    <div className="w-[220px] inline-block p-2 cursor-pointer">item4</div>
+                    <div className="w-[220px] inline-block p-2 cursor-pointer">item5</div>
+                    <div className="w-[220px] inline-block p-2 cursor-pointer">item6</div>
+                    <div className="w-[220px] inline-block p-2 cursor-pointer">item7</div>
+                    <div className="w-[220px] inline-block p-2 cursor-pointer">item8</div>
+                    <div className="w-[220px] inline-block p-2 cursor-pointer">item9</div>
+                </div>
+                <MdChevronRight size={40} onClick={slideRight} />
+            </div>
+
+            <Card />
         </div>
     );
 }
-export default Home ;
+export default Home;

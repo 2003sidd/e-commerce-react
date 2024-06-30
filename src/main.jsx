@@ -7,7 +7,11 @@ import AboutUs from './Components/about/aboutUs.jsx';
 import ContactUs from './Components/contact/contactUs.jsx'
 import Faqs from './Components/FAQs.jsx'
 import Shop from './Components/shop.jsx'
-
+import Login from './Components/Login/Login.jsx'
+import SignUp from './Components/signup/Signup.jsx'
+import './style.css';
+import Trail from './Components/contact/trail.jsx'
+import Collection from './Components/collection/collection.jsx'
 
 // const route=createBrowserRouter([
 //     {
@@ -34,12 +38,14 @@ import Shop from './Components/shop.jsx'
 const route=createBrowserRouter(
     createRoutesFromElements(
         <Route path='/' element={<App />} >
-            <Route path='' element={<Home/ >} />
+            <Route path='' element={<Trail/ >} />
             <Route path='about' element={<AboutUs/ >} />
             <Route path='contact' element={<ContactUs/ >} />
             <Route path='faqs' element={<Faqs/ >} />
             <Route path='shop' element={<Shop/ >} />
-           
+            <Route path='login' element={<Login/ >} />
+            <Route path='signup' element={<SignUp/ >} />
+            <Route path="collection/:gender" element={<Collection />} />
         </Route>
     )
 )

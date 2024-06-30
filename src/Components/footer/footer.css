@@ -1,0 +1,13 @@
+.footer{
+    background-color: #dfdfdf;
+    padding: 1rem 3rem;
+}
+.footer-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+}
+hr{
+    height: 2px;
+    color: rgb(56, 49, 49);
+}

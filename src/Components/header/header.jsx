@@ -1,10 +1,9 @@
-// import React from 'react';
-// import { ReactDOM } from 'react-dom/client';
 import './header.css';
 import '../../utility.css';
 import { Link } from 'react-router-dom';
+import sidd from '../../context/UserContext';
 const Header = () => {
-
+  const {cart}=sidd();
   return (
 
     <div className="header">
@@ -30,11 +29,15 @@ const Header = () => {
         </li>
       </ul>
       <div>
-        <button>Login</button>
-        <button>Sign up</button>
+        <button>
+          <Link to='/login'>Login</Link>
+          </button>
+        <button>
+        <Link to='/signup'>Sign up</Link>
+          </button>
         <button>Sign out</button>
 
-        <button>Cart</button>
+        <button>Cart {cart}</button>
         <button>Wishlist</button>
       </div>
     </nav>
