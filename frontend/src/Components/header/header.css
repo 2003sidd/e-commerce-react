@@ -1,0 +1,36 @@
+ .nav{
+    height: 50px;
+    /* background-color: rgb(231 244 247); */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 2.5rem;
+    border-bottom: 0.1px solid #bdb7b7;
+    margin-bottom: 2rem;
+ }
+ li{
+   margin-inline: 0.5rem;
+   font-size: 1.1rem;
+   border: 0.5px  ;
+   text-decoration: none;
+   list-style-type: none;
+   border: 0.5px solid white;
+  }
+  li:hover{
+   border: 0.5px solid #a09999;
+  }
+  
+
+  header{
+   background-color: black;
+   text-align: center;
+   padding-block: 6px;
+   color: #dbd5cb;
+  }
+.active{
+   color: #DB4444;
+}
+
+#search{
+   border: none;
+}

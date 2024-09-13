@@ -1,0 +1,17 @@
+.container{
+    display: flex;
+    flex-direction:column ;
+    justify-content: center;
+    align-items: center;
+    margin-block: 4rem;
+
+}
+.login-page{
+    text-align: center;
+}
+input{
+    margin-inline: 6px;
+}
+.form-group{
+    margin-block: 8px;
+}
