@@ -1,0 +1,15 @@
+backend
+1. how you can set ids
+2. multer + cloudnary 
+3. streaming
+4. socket.io
+ 5. nginx 
+6. graph ql 
+7. caching and blah blah blah !!
+
+
+fronend -
+
+admin panel 
+1. crud - category, color, size with validations
+2. product- crud with validations

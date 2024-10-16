@@ -3,12 +3,14 @@ const mongoose=require("mongoose");
 const colorSchema= new mongoose.Schema({
     name:{
         type:String,
-        require:true
+        required:true,
+        minLength:2
+        
     },
     image:{
         type:String,
-        require:true
+        required:true
     }
 });
-const colorModal= mongoose.modal("Color",colorSchema);
-module.exports+{colorModal};
+const colorModal= mongoose.model("Color",colorSchema);
+module.exports={colorModal};

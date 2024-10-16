@@ -31,10 +31,7 @@ const route = createBrowserRouter(
                 <Route path='signup' element={<SignUp />} />
                 <Route path="collection/:gender" element={<Collection />} />
                 <Route path="userProfile" element="userProfile" />
-                <Route path="admin/ 
-                
-                
-                " element={<Dashboard />}>
+                <Route path='admin' element={<Dashboard />} >
                     <Route path='' element={<CategoryUpsertWithProps comp="size" />} />
                     <Route path='size' element={<CategoryUpsertWithProps comp="size" />} />
                     <Route path='color' element={<CategoryUpsertWithProps comp="color" />} />

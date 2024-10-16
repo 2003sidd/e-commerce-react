@@ -61,3 +61,8 @@
     /* aspect-ratio: 1 / 1; */
     /* aspect-ratio: ; */
 }
+
+.image{
+    background-color: red;
+    border-radius: 50%;
+}

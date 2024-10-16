@@ -1,96 +1,119 @@
 const { colorModal } = require("../modals/color.modal");
+const { ApiResponse } = require("../utils/ApiResponse");
+const { INTERNAL_SERVER_ERROR } = require("../utils/constant");
 
+
+// get api for the category
 const getAllColor = async (req, res) => {
+    try {
+        const data = await colorModal.find();
 
-    const data = await colorModal.find();
-    if (data.length == 0) {
-        res.json({
-            status: 200,
-            message: "data not found",
-            data: null
-        });
-    } else {
-        res.json({
-            status: 200,
-            message: "data found",
-            data: data
-        });
+        if (data.length == 0) {
+            res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
+        } else {
+            res.json(new ApiResponse(200, data, "data found"));
+        }
+    } catch (Error) {
+        res.json(new ApiResponse(500, Error.error, INTERNAL_SERVER_ERROR));
     }
-
-    res.end(JSON.stringify(data));
 };
 
+
+// delete api for deleting a category
 const deleteColor = async (req, res) => {
     try {
         const _id = req.params.id;
         const data = await colorModal.findByIdAndDelete({ _id });
         if (data) {
-            res.json({
-                status: 202,
-                message: "deleted successfully",
-                data: null
-            });
+            res.json(new ApiResponse(200, data, "deleted successfully"));
         } else {
-            res.json({
-                status: 500,
-                message: "deleted unsuccessfully",
-                data: null
-            });
+            res.json(new ApiResponse(204, null, NO_CONTENT_FOUND));
         }
     } catch (error) {
-        console.log(error);
+        res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
 }
 
-const updateCategory = async (req, res) => {
+const updateColor = async (req, res) => {
     try {
         const _id = req.params.id;
+        // Check if ID is provided
 
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.json(new ApiResponse(400, null, !id ? 'ID parameter is missing' : 'Invalid ID format'));
+        }
+
+        const data = await colorModal.findByIdAndUpdate(id);
+
+        if (data) {
+            res.json(new ApiResponse(200, data, "update sucessfully"));
+        } else {
+            res.json(new ApiResponse(400, null, BAD_REQUEST));
+        }
     } catch (error) {
-        console.log(error);
+        res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
-};
+}
 
 const getColorById = async (req, res) => {
     try {
-        console.log("req is ", req);
-        const _id = req.params.id;
-        const data = await colorModal.findById({ _id });
-        if (data) {
-            res.json({
-                status: 200,
-                message: "data found",
-                data: data
-            });
+        const { id } = req.params;
+        // Check if ID is provided
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            res.json(new ApiResponse(400, null, !id ? 'ID parameter is missing' : 'Invalid ID format',));
         }
-        res.json({
-            status: 200,
-            message: "data not found",
-            data: null
-        });
+        console.log("id is",id);
+
+        // Find the category by ID
+        const data = await colorModal.findById(id);
+
+        // Check if data is found
+        if (data) {
+            res.json(new ApiResponse(200, data, "Data found"));
+        } else {
+            res.json(new ApiResponse(400, null, BAD_REQUEST));
+        }
     } catch (error) {
-        console.log(error)
+        res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
-};
+}
 
 
 const addColor = async (req, res) => {
-    const { name } = req.body;
-    console.log("it works add category")
-    const data = await colorModal.create({ name });
-    if (data) {
-        res.json({
-            status: 204,
-            message: "created successfully",
-            data: data
-        })
-    } else {
-        res.json({
-            status: 500,
-            message: "failed",
-            data: data
-        })
-    }
-};
+    try {
+        const { name,image } = req.body;
 
-module.exports = { getAllColor, getColorById, addColor, updateCategory, deleteColor }
+     
+
+        const data = await colorModal.create({ name ,image});
+        if (data) {
+            res.json(new ApiResponse(201, data, "created successfully"));
+        } else {
+            res.json(new ApiResponse(204, null, "failed"));
+        }
+    } catch (Error) {
+        res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
+    }
+}
+const addSize = async (req, res) => {
+    try {
+        const { name,image } = req.body;
+
+        //check name
+        // if (typeof name == "undefined" || name.trim() === "") {
+        //     res.json(new ApiResponse(400, null, "provide name"));
+        // }
+
+        const data = await colorModal.create({ name });
+        if (data) {
+            res.json(new ApiResponse(201, data, "created successfully"));
+        } else {
+            res.json(new ApiResponse(204, null, "failed"));
+        }
+    } catch (Error) {
+        res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
+    }
+}
+
+
+module.exports = { addColor, getColorById, updateColor, deleteColor, getAllColor };

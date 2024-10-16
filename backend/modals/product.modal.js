@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
 const variantSchema = new mongoose.schema({
-    size:{
+    size:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Size"
-    },
+    }],
     color:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Color"
@@ -32,10 +32,10 @@ const productSchema = new mongoose.schema({
         type: String,
         require: true
     },
-    category: {
+    category: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category"
-    },
+    }],
     for:{
         type:[String],
         enum:['unisex', 'men', 'women', 'kids'],

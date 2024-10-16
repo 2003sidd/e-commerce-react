@@ -7,6 +7,9 @@ const router = require("./route/route");
 const authRouter = require('./route/user');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const {upload} = require("./utils/multer")
+// const multer  = require('multer')
+// const upload = multer({ dest: 'uploads/' })
 
 dotenv.config();
 
@@ -35,6 +38,7 @@ const authenticateJWT = (req, res, next) => {
     });
 };
 
+
 // Routes
 app.use("/route/api", router);
 app.use("/route/users", authRouter);
@@ -56,6 +60,14 @@ app.get("/", async (req, resp) => {
     console.log("API hit");
     resp.send("Home works");
 });
+
+app.post("/upload",upload.single("uploaded_file"),(req,res)=>{
+    console.log('body ',req.body);
+    console.log("file",req.file);
+    res.end("end");
+})
+
+
 
 // Server listening
 const PORT = 8800;
