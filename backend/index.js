@@ -7,7 +7,7 @@ const router = require("./route/route");
 const authRouter = require('./route/user');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-const {upload} = require("./utils/multer")
+const { upload } = require("./utils/multer")
 // const multer  = require('multer')
 // const upload = multer({ dest: 'uploads/' })
 
@@ -19,7 +19,7 @@ app.use(cors());
 
 const authenticateJWT = (req, res, next) => {
     const token = req.header('Authorization')?.split(' ')[1];
-    
+
     if (token == null) return res.sendStatus(401); // No token provided
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
@@ -32,7 +32,7 @@ const authenticateJWT = (req, res, next) => {
                 return res.status(403).json({ message: 'Invalid token' });
             }
         }
-        
+
         req.user = user; // Add user to request object
         next(); // Proceed to the next middleware or route handler
     });
@@ -61,9 +61,9 @@ app.get("/", async (req, resp) => {
     resp.send("Home works");
 });
 
-app.post("/upload",upload.single("uploaded_file"),(req,res)=>{
-    console.log('body ',req.body);
-    console.log("file",req.file);
+app.post("/upload", upload.single("uploaded_file"), (req, res) => {
+    console.log('body ', req.body);
+    console.log("file", req.file);
     res.end("end");
 })
 

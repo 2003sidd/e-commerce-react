@@ -1,4 +1,4 @@
-const { sizeModal } = require("../modals/size.modal");
+const { sizeModal } = require("../modals/size-modal");
 const mongoose = require("mongoose");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { DATA_NOT_FOUND, INTERNAL_SERVER_ERROR, BAD_REQUEST, NO_CONTENT_FOUND } = require("../utils/constant");

@@ -1,4 +1,4 @@
-const { productModal } = require("../modals/product.modal");
+const { productModal } = require("../modals/product-modal");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { INTERNAL_SERVER_ERROR, NO_CONTENT_FOUND } = require("../utils/constant");
 

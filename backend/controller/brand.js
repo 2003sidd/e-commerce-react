@@ -1,12 +1,12 @@
-const categoryModal = require("../modals/category-modal");
+const brandModal = require("../modals/brand-modal");
 const mongoose = require("mongoose");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { DATA_NOT_FOUND, INTERNAL_SERVER_ERROR, BAD_REQUEST, NO_CONTENT_FOUND } = require("../utils/constant");
 
 // get api for the category
-const getAllCateory = async (req, res) => {
+const getAllBrand = async (req, res) => {
     try {
-        const data = await categoryModal.find();
+        const data = await brandModal.find();
 
         if (data.length == 0) {
             res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
@@ -20,10 +20,10 @@ const getAllCateory = async (req, res) => {
 
 
 // delete api for deleting a category
-const deleteCategory = async (req, res) => {
+const deleteBrand = async (req, res) => {
     try {
         const _id = req.params.id;
-        const data = await categoryModal.findByIdAndDelete({ _id });
+        const data = await brandModal.findByIdAndDelete({ _id });
         if (data) {
             res.json(new ApiResponse(200, data, "deleted successfully"));
         } else {
@@ -34,7 +34,7 @@ const deleteCategory = async (req, res) => {
     }
 }
 
-const updateCategory = async (req, res) => {
+const updateBrand = async (req, res) => {
     try {
         const _id = req.params.id;
         
@@ -47,15 +47,15 @@ const updateCategory = async (req, res) => {
         const updateData = req.body;
 
         // Find and update the category
-        const updatedCategory = await categoryModal.findByIdAndUpdate(_id, updateData, {
+        const updatedBrand = await brandModal.findByIdAndUpdate(_id, updateData, {
             new: true, // return the updated document
             runValidators: true // validate before updating
         });
 
-        if (updatedCategory) {
-            res.json(new ApiResponse(200, updatedCategory, "Updated successfully"));
+        if (updatedBrand) {
+            res.json(new ApiResponse(200, updatedBrand, "Updated successfully"));
         } else {
-            res.json(new ApiResponse(404, null, 'Category not found'));
+            res.json(new ApiResponse(404, null, 'Brand not found'));
         }
     } catch (error) {
         console.error(error); // Log the error for debugging
@@ -64,7 +64,7 @@ const updateCategory = async (req, res) => {
 }
 
 
-const getCategoryById = async (req, res) => {
+const getBrandById = async (req, res) => {
     try {
         const { id } = req.params;
         // Check if ID is provided
@@ -73,7 +73,7 @@ const getCategoryById = async (req, res) => {
         }
 
         // Find the category by ID
-        const data = await categoryModal.findById(id);
+        const data = await brandModal.findById(id);
 
         // Check if data is found
         if (data) {
@@ -87,7 +87,7 @@ const getCategoryById = async (req, res) => {
 }
 
 
-const addCategory = async (req, res) => {
+const addBrand = async (req, res) => {
     try {
         const { name } = req.body;
 
@@ -96,7 +96,7 @@ const addCategory = async (req, res) => {
             res.json(new ApiResponse(400, null, "provide name"));
         }
 
-        const data = await categoryModal.create({ name });
+        const data = await brandModal.create({ name });
         if (data) {
             res.json(new ApiResponse(201, data, "created successfully"));
         } else {
@@ -107,4 +107,4 @@ const addCategory = async (req, res) => {
     }
 }
 
-module.exports = { getAllCateory, addCategory, getCategoryById, deleteCategory, updateCategory };
+module.exports = { getAllBrand, addBrand, getBrandById, deleteBrand, updateBrand };

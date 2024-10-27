@@ -1,4 +1,4 @@
-const { colorModal } = require("../modals/color.modal");
+const { colorModal } = require("../modals/color-modal");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { INTERNAL_SERVER_ERROR } = require("../utils/constant");
 

@@ -1,4 +1,4 @@
-const { userModal } = require("../modals/user.modal");
+const { userModal } = require("../modals/user-modal");
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const { ApiResponse } = require("../utils/ApiResponse");
@@ -34,7 +34,11 @@ const loginUserHandler = async (req, res) => {
         console.log("user is", user)
         if (user) {
             const accessToken = getFcmToken(user);
-            res.json(new ApiResponse(200, accessToken, "login successfully"));
+            if(acessToken){
+                res.json(new ApiResponse(200, accessToken, "login successfully"));
+            }else{
+                res.json(new ApiResponse(SERVER_ERROR_CODE, null, INTERNAL_SERVER_ERROR));
+            }
         } else {
             console.log("user is", user);
             res.json(new ApiResponse(400, null, "user not found!"));

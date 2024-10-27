@@ -15,6 +15,12 @@ import Faqs from './Components/Faqs/FAQs.jsx'
 import Dashboard from './AdminComponent/dashboard/dashboard.jsx'
 import CategoryList from './AdminComponent/category/categaryView.jsx'
 import CategoryUpsert from './AdminComponent/category/categoryUpsert.jsx'
+import SizeList from './AdminComponent/size/sizeList.jsx'
+import ColorList from './AdminComponent/color/colorList.jsx'
+import SizeUpsert from './AdminComponent/size/sizeUpsert.jsx'
+import ColorUpsert from './AdminComponent/color/colorUpsert.jsx'
+import BrandUpsert from './AdminComponent/brand/brandUpsert.jsx'
+import BrandList from './AdminComponent/brand/brandlist.jsx'
 
 const CategoryUpsertWithProps = (props) => <CategoryUpsert {...props} />;
 
@@ -33,10 +39,16 @@ const route = createBrowserRouter(
                 <Route path="userProfile" element="userProfile" />
                 <Route path='admin' element={<Dashboard />} >
                     <Route path='' element={<CategoryUpsertWithProps comp="size" />} />
-                    <Route path='size' element={<CategoryUpsertWithProps comp="size" />} />
-                    <Route path='color' element={<CategoryUpsertWithProps comp="color" />} />
-                    <Route path='category' element={<CategoryUpsertWithProps comp="category" />} />
+                    <Route path='size' element={<SizeList/>} />
+                    <Route path='color' element={<ColorList/>} />
+                    <Route path='category' element={<CategoryList />} />
+                    <Route path='sizeupsert' element={<SizeUpsert/>} />
+                    <Route path='colorupsert' element={<ColorUpsert/>} />
+                    <Route path='categoryupsert' element={<CategoryUpsert />} />
                     <Route path='addItem' element={<CategoryUpsert />} />
+                    <Route path='addBrand' element={<BrandUpsert />} />
+                    <Route path='brand' element={<BrandList />} />
+
                     <Route path='categoryLIST' element={<CategoryList />} />
                 </Route>
             </Route>
