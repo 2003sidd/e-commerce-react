@@ -30,9 +30,16 @@ const loginUserHandler = async (req, res) => {
         // get the username and password 
         const { name, password } = req.body;
 
-        const user = await userModal.findOne({ name, password });
+        const user = await userModal.findOne({ name });
         console.log("user is", user)
+        
         if (user) {
+            const isTrue = await userModal.comparePassword(password);
+            if(!isTrue){
+                res.json(new ApiResponse(200, "Password incorrect", "login successfully"));
+                return 
+            }
+            
             const accessToken = getFcmToken(user);
             if(acessToken){
                 res.json(new ApiResponse(200, accessToken, "login successfully"));
@@ -40,16 +47,16 @@ const loginUserHandler = async (req, res) => {
                 res.json(new ApiResponse(SERVER_ERROR_CODE, null, INTERNAL_SERVER_ERROR));
             }
         } else {
-            console.log("user is", user);
             res.json(new ApiResponse(400, null, "user not found!"));
         }
     } catch (error) {
-        res.json(new ApiResponse(SERVER_ERROR_CODE, null, INTERNAL_SERVER_ERROR));
+        console.log("error",error)
+        res.json(new ApiResponse(SERVER_ERROR_CODE, error, INTERNAL_SERVER_ERROR));
     }
 };
 
 const getFcmToken = (user) => {
-    return jwt.sign({ name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign({ name: user.name, age:user.age, email:user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 }
 
 

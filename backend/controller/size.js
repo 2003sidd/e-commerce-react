@@ -55,6 +55,40 @@ const updateSize = async (req, res) => {
     }
 }
 
+
+const getSizes = async (req, res) => {
+    try {
+        const {pageIndex,top}=req.body;
+
+        if(pageIndex== null || pageIndex<=0){
+            return res.send("pageIndex is required")
+        }
+
+        if(top== null || top<=0){
+            return res.send("top is required")
+        }
+
+        console.log("depends", top, pageIndex)
+
+        // // Check if ID is provided
+        // if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        //     return res.json(new ApiResponse(400, null ,id?"Invalid ID format":"ID paramter is missing"));
+        // }
+
+        const data = await sizeModal.find().skip(top*pageIndex);
+        const total = await sizeModal.estimatedDocumentCount();
+
+        if (data) {
+            res.json(new ApiResponse(200, {data,total}, "update sucessfully"));
+        } else {
+            res.json(new ApiResponse(400, null, BAD_REQUEST));
+        }
+
+    } catch (error) {
+        res.json(new ApiResponse(500, error, INTERNAL_SERVER_ERROR));
+    }
+}
+
 const getSizeById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -88,7 +122,8 @@ const addSize = async (req, res) => {
             res.json(new ApiResponse(400, null, "provide name"));
         }
 
-        const data = await sizeModal.create({ name });
+        const data = await sizeModal.create({ size:name });
+        
         if (data) {
             res.json(new ApiResponse(201, data, "created successfully"));
         } else {
@@ -100,4 +135,4 @@ const addSize = async (req, res) => {
 }
 
 
-module.exports = { getAllSize, addSize, getSizeById, deleteSize, updateSize };
+module.exports = { getAllSize, addSize, getSizeById, deleteSize, updateSize,getSizes };

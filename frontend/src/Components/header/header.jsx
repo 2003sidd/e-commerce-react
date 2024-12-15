@@ -3,9 +3,10 @@ import '../../utility.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Link, NavLink } from 'react-router-dom';
-import sidd from '../../context/UserContext';
+import useUserContext from '../../context/UserContext';
 const Header = () => {
-  const { cart } = sidd();
+  const { userDetails } = useUserContext();
+
   return (
 
     <>
@@ -20,9 +21,9 @@ const Header = () => {
           <li className='font-medium'>
             <NavLink to='/'>Home</NavLink >
           </li>
-          <li className='font-medium'>
+          {userDetails?.isAdmin == 1 && <li className='font-medium'>
             <NavLink to='/admin'>Admin</NavLink >
-          </li>
+          </li>}
           {/* <li id="listitem3">
           <NavLink  to='/shop'>Shop Now</NavLink >
         </li> */}
@@ -37,19 +38,19 @@ const Header = () => {
           </li>
         </ul>
         <div className='nav-btn'>
-          {/* <input type="text" name="search" id="search" /> */}
-          <button className='mx-2'>
-            <Link to='/contact'>
-              <FontAwesomeIcon icon={faUser} />
-            </Link>
-          </button>
-
-
           <button className='mx-4'>
             <FontAwesomeIcon icon={faShoppingCart} />
           </button>
           <button className='mx-4'>
             <FontAwesomeIcon icon={faHeart} />
+          </button>
+          <button className='mx-2'>
+          {userDetails ==null?
+            <Link to='/login'>
+              <FontAwesomeIcon icon={faUser} />
+            </Link>: <Link to='/contact'>
+              <FontAwesomeIcon icon={faUser} />
+            </Link>}
           </button>
         </div>
       </nav>

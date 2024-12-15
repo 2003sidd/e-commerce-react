@@ -21,6 +21,8 @@ import SizeUpsert from './AdminComponent/size/sizeUpsert.jsx'
 import ColorUpsert from './AdminComponent/color/colorUpsert.jsx'
 import BrandUpsert from './AdminComponent/brand/brandUpsert.jsx'
 import BrandList from './AdminComponent/brand/brandlist.jsx'
+import UserFormArray from './AdminComponent/users/user.jsx'
+import ProductUpsert from './AdminComponent/product/product.jsx'
 
 const CategoryUpsertWithProps = (props) => <CategoryUpsert {...props} />;
 
@@ -48,6 +50,8 @@ const route = createBrowserRouter(
                     <Route path='addItem' element={<CategoryUpsert />} />
                     <Route path='addBrand' element={<BrandUpsert />} />
                     <Route path='brand' element={<BrandList />} />
+                    <Route path='users' element={<UserFormArray />} />
+                    <Route path='product' element={<ProductUpsert />} />
 
                     <Route path='categoryLIST' element={<CategoryList />} />
                 </Route>
@@ -59,5 +63,7 @@ const route = createBrowserRouter(
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
+    
     <RouterProvider router={route} />
+
 );

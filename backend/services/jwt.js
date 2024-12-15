@@ -5,4 +5,7 @@ const signIn=(user)=>{
     jwt.sign(user,secretKey);
 };
 
-odule.exports={signIn};
+
+
+
+module.exports={signIn};

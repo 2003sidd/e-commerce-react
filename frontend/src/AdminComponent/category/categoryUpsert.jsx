@@ -37,8 +37,9 @@ const CategoryUpsert = (Props) => {
                     <h1 className="text-center font-bold text-xl">Category</h1>
                     <div className="mt-2">
                         <label to="category">Category Name</label>
-                        <input className="mt-2" value={name}  htmlFor="categroy" onChange={(e) => setName(e.target.value)} type="text" name="categoryName" />
+                        <input className="mt-2 py-2 rounded border-2 bg-gray-400" value={name}  htmlFor="categroy" onChange={(e) => setName(e.target.value)} type="text" name="categoryName" />
                     </div>
+    
                    
                     <div className="text-center">
                         <button onClick={upsetCategory} className="py-2 px-4 font-medium border-2 rounded-xl mt-2 text-white center bg-secondary">Add Category</button>

@@ -36,11 +36,11 @@ const productSchema = new mongoose.schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category"
     }],
-    for:{
-        type:[String],
-        enum:['unisex', 'men', 'women', 'kids'],
-        default:"unisex"
-    },
+    for: {
+        type: String,
+        enum: ['Male', 'Female', 'Unisex'],
+        required: true
+      },
     varaint:{
         type:[variantSchema],
         require:true

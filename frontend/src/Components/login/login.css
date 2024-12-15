@@ -1,17 +1,17 @@
-.container{
-    display: flex;
-    flex-direction:column ;
-    justify-content: center;
-    align-items: center;
-    margin-block: 4rem;
 
-}
 .login-page{
     text-align: center;
 }
-input{
-    margin-inline: 6px;
+.submit-btn{
+    padding-block: 2px;
+    color: white;
+    background: var(--primary-color);
+    font-size: 1.1rem;
 }
-.form-group{
-    margin-block: 8px;
+
+.input{
+    border-color: gray;
+    border-width: 0px;
+
+    background: #cecece75;
 }

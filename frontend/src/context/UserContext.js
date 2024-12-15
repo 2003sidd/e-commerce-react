@@ -1,19 +1,15 @@
 import React, { useContext } from "react";
 
 const UserContext = React.createContext({
-    cart: 0,
-    sidd: "abhay",
-    setCartCount: () => {
-        cart++;
-    },
-     changeName(input){
-    console.log("i am called")
-}
+        userDetails:{
+            name:"redmi jii",
+            age:21
+          },
+        setUserDetails: () => {},
+    })
 
-});
+export const UserContextProvider = UserContext.Provider;
 
-export const Context = UserContext.Provider;
-export default function sidd1() {
-
+export default function useUserContext() {
     return useContext(UserContext)
 }

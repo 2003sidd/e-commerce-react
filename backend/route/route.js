@@ -1,6 +1,6 @@
 const express=require("express");
 const { getAllCateory, addCategory,getCategoryById, deleteCategory, updateCategory } = require("../controller/category");
-const { addSize,deleteSize,getAllSize,getSizeById,updateSize} = require("../controller/size");
+const { addSize,deleteSize,getAllSize,getSizeById,updateSize, getSizes} = require("../controller/size");
 const { getAllColor, getColorById, addColor, updateColor, deleteColor } = require("../controller/color");
 const { deleteBrand, updateBrand, addBrand, getBrandById, getAllBrand } = require("../controller/brand");
 const  router= express.Router();
@@ -24,6 +24,7 @@ router.route('/deleteCategory/:id').delete(deleteCategory);
 
 // routes related to size CRUD
 router.route('/size').get(getAllSize);
+router.route('/size').post(getSizes);
 router.route('/sizeById/:id').get(getSizeById);
 router.route('/addSize').post(addSize);
 router.route('/updateSize/:id').post(updateSize);

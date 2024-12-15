@@ -95,8 +95,9 @@ const addCategory = async (req, res) => {
         if (typeof name == "undefined" || name.trim() === "") {
             res.json(new ApiResponse(400, null, "provide name"));
         }
+        console.log("name",name)
 
-        const data = await categoryModal.create({ name });
+        const data = await categoryModal.create({ size:name });
         if (data) {
             res.json(new ApiResponse(201, data, "created successfully"));
         } else {

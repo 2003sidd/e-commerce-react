@@ -7,7 +7,7 @@ const router = require("./route/route");
 const authRouter = require('./route/user');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-const { upload } = require("./utils/multer")
+// const { upload } = require("./utils/multer")
 // const multer  = require('multer')
 // const upload = multer({ dest: 'uploads/' })
 
@@ -61,11 +61,11 @@ app.get("/", async (req, resp) => {
     resp.send("Home works");
 });
 
-app.post("/upload", upload.single("uploaded_file"), (req, res) => {
-    console.log('body ', req.body);
-    console.log("file", req.file);
-    res.end("end");
-})
+// app.post("/upload", upload.single("uploaded_file"), (req, res) => {
+//     console.log('body ', req.body);
+//     console.log("file", req.file);
+//     res.end("end");
+// })
 
 
 
