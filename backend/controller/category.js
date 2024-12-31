@@ -6,7 +6,12 @@ const { DATA_NOT_FOUND, INTERNAL_SERVER_ERROR, BAD_REQUEST, NO_CONTENT_FOUND } =
 // get api for the category
 const getAllCateory = async (req, res) => {
     try {
-        const data = await categoryModal.find();
+        // const data = await categoryModal.find();
+        const query = categoryModal.find();
+        console.log("query",query);
+        const data = await query.exec(); // Query executes here
+        console.log("data",data);
+
 
         if (data.length == 0) {
             res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
@@ -37,7 +42,7 @@ const deleteCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
     try {
         const _id = req.params.id;
-        
+
         // Check if ID is provided and is valid
         if (!_id || !mongoose.Types.ObjectId.isValid(_id)) {
             return res.json(new ApiResponse(400, null, !_id ? 'ID parameter is missing' : 'Invalid ID format'));
@@ -93,18 +98,18 @@ const addCategory = async (req, res) => {
 
         //check name
         if (typeof name == "undefined" || name.trim() === "") {
-            res.json(new ApiResponse(400, null, "provide name"));
+            return res.json(new ApiResponse(400, null, "provide name"));
         }
-        console.log("name",name)
+        console.log("name", name)
 
-        const data = await categoryModal.create({ size:name });
+        const data = await categoryModal.create({ name });
         if (data) {
-            res.json(new ApiResponse(201, data, "created successfully"));
+            return res.json(new ApiResponse(201, data, "created successfully"));
         } else {
-            res.json(new ApiResponse(204, null, "failed"));
+            return res.json(new ApiResponse(204, null, "failed"));
         }
     } catch (Error) {
-        res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
+        return res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
 }
 

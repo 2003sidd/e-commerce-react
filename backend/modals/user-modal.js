@@ -1,52 +1,54 @@
 const mongoose = require("mongoose");
-const bycrpt = require("bcrypt");
-const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    number: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true  // Correct spelling here
-    },
-    address: {
-        type: [String],
-        default: null
-    },
-    refreshToken: {
-        type: String
-    }
+const bcrypt = require("bcrypt"); // Corrected library name
 
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  number: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: [String],
+    default: null,
+  },
+  refreshToken: {
+    type: String,
+  },
 }, { timestamps: true });
 
-
-
-
 userSchema.pre('save', async function (next) {
-    console.log("password is", this.password)
-    this.password = await bycrpt.hash(this.password, 10);
+  // Hash the password only if it has been modified (or is new)
+  if (!this.isModified('password')) return next();
 
+  try {
+    this.password = await bcrypt.hash(this.password, 10); // Use a cost factor of at least 10
     next();
-
+  } catch (error) {
+    console.error("Error hashing password:", error);
+    next(error); // Pass the error to the error handler
+  }
 });
 
-
 userSchema.methods.comparePassword = async function (password) {
-    return await this.bycrpt.compare(password, this.password);
-}
+  try {
+    return await bcrypt.compare(password, this.password);
+  } catch (error) {
+    console.error("Error comparing password:", error);
+    return false; // Return false on error to avoid potential leaks
+  }
+};
 
-userSchema.method.genrateToken = async function (params) {
-
-
-}
 
 let userModal = mongoose.model("User", userSchema);
 module.exports = { userModal }; 

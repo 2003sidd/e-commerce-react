@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance
 const apiClient = axios.create({
-  baseURL: 'https://api.example.com', // Replace with your API's base URL
+  baseURL: 'http://localhost:8800/', // Replace with your API's base URL
   timeout: 10000, // Request timeout in milliseconds
   headers: {
     'Content-Type': 'application/json',
@@ -12,6 +12,8 @@ const apiClient = axios.create({
 // Add a request interceptor (optional)
 apiClient.interceptors.request.use(
   (config) => {
+
+    console.log("request ", config)
     // Modify the request config if needed (e.g., add auth tokens)
     const token = localStorage.getItem('authToken'); // Example: Get token from storage
     if (token) {
@@ -28,6 +30,8 @@ apiClient.interceptors.request.use(
 // Add a response interceptor (optional)
 apiClient.interceptors.response.use(
   (response) => {
+    console.log("response ", response)
+
     // Process and return the response data
     return response.data;
   },

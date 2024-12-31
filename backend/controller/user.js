@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const { ApiResponse } = require("../utils/ApiResponse");
 const { SERVER_ERROR_CODE, INTERNAL_SERVER_ERROR } = require("../utils/constant");
+const { generateToken,generateRefreshToken } = require("../utils/jwt")
+const bcrypt = require("bcrypt")
 
 dotenv.config();
 
@@ -14,7 +16,9 @@ const signUpUserHandler = async (req, res) => {
 
         user.save()
             .then((savedUser) => {
-                const accessToken = getFcmToken(savedUser);
+                // genrate fcm token
+                const accessToken = generateToken(savedUser);
+
                 res.json(new ApiResponse(201, { accessToken, savedUser }, 'Registration successful!'));
             })
             .catch((error) => {
@@ -31,33 +35,67 @@ const loginUserHandler = async (req, res) => {
         const { name, password } = req.body;
 
         const user = await userModal.findOne({ name });
-        console.log("user is", user)
-        
+
         if (user) {
-            const isTrue = await userModal.comparePassword(password);
-            if(!isTrue){
+            // console.log(userModal.fullName())
+            // const isTrue = await userModal.comparePassword(password);
+            const isTrue = await bcrypt.compare(password, user.password);
+            if (!isTrue) {
                 res.json(new ApiResponse(200, "Password incorrect", "login successfully"));
-                return 
+                return
             }
-            
-            const accessToken = getFcmToken(user);
-            if(acessToken){
-                res.json(new ApiResponse(200, accessToken, "login successfully"));
-            }else{
+            console.log("it works ",user)
+            // genrate fcm token
+            const accessToken = generateToken(user.toObject());
+            const refreshToken = generateRefreshToken(user.toObject());
+            if (accessToken && refreshToken) {
+                user.refreshToken=refreshToken;
+                await user.save({ validateBeforeSave: false });
+                res.json(new ApiResponse(200, {accessToken,refreshToken}, "login successfully"));
+            } else {
                 res.json(new ApiResponse(SERVER_ERROR_CODE, null, INTERNAL_SERVER_ERROR));
             }
         } else {
             res.json(new ApiResponse(400, null, "user not found!"));
         }
     } catch (error) {
-        console.log("error",error)
+        console.log("error", error)
         res.json(new ApiResponse(SERVER_ERROR_CODE, error, INTERNAL_SERVER_ERROR));
     }
 };
 
-const getFcmToken = (user) => {
-    return jwt.sign({ name: user.name, age:user.age, email:user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-}
+
+
+const refreshToken = async (req, res) => {
+    try {
+        // get the username and password 
+        const   refreshToken  = req.body.refreshToken;
+console.log("refresh token",req.body )
+console.log("refresh token is",refreshToken )
+
+        if (!refreshToken) return res.json(new ApiResponse(400, null, "Refresh token not fount"));
+
+
+        // Verify the JWT token
+        const refToken = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+        const user = await userModal.findById(refToken?._id);
+        if(!user) return res.json(new ApiResponse(400, null, "invalid refresh token"))
+
+            if(user.refreshToken===refreshToken){
+                const jwt = await generateToken(user.toObject());
+
+               return res.json(new ApiResponse(400, {jwt}, "invalid refresh token"))
+            }else{
+             return res.json(new ApiResponse(400, null, "invalid refresh token"))
+            }
+
+        // Attach user information to the request object
+        
+    } catch (error) {
+        console.log("error", error)
+        res.json(new ApiResponse(SERVER_ERROR_CODE, error, INTERNAL_SERVER_ERROR));
+    }
+};
 
 
 const updateUser = async (req, res) => {
@@ -66,4 +104,4 @@ const updateUser = async (req, res) => {
     res.end("it also works well");
 };
 
-module.exports = { signUpUserHandler, loginUserHandler, updateUser };
+module.exports = { signUpUserHandler, loginUserHandler, updateUser, refreshToken };

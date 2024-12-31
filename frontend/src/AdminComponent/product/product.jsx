@@ -1,5 +1,5 @@
 import React from "react";
-import "./product.css"
+import "./product.css";
 const ProductUpsert = () => {
     const [productData, setProductData] = React.useState({
         name: "",
@@ -29,7 +29,15 @@ const ProductUpsert = () => {
 
 
     }
+function changeColor(event){
+    // setProductData({...productData,for:event.target.value});
+    setProductData({
+        ...productData,
+        for: event.target.value
+      });
+    console.log("value is",productData)
 
+}
     function removeIndex(index) {
         let varientArray = productData.varient.filter((_, i) => i !== index);
 
@@ -56,7 +64,13 @@ const ProductUpsert = () => {
                         <input className="input" type="text" name="category" placeholder="Category" />
                     </div>
                     <div className="w-1/2  px-4 flex">For<span className="text-red-500">*</span>
-                        <input className="input" type="text" name="for" placeholder="For" />
+                        <select value={productData.for} onChange={changeColor}>
+                            <option value="">Select a size</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="unisez">Unisex</option>
+                        </select>
+
                     </div>
                 </div>
                 <div className="w-full p-4 flex">

@@ -1,6 +1,7 @@
 const { productModal } = require("../modals/product-modal");
 const { ApiResponse } = require("../utils/ApiResponse");
 const { INTERNAL_SERVER_ERROR, NO_CONTENT_FOUND } = require("../utils/constant");
+const { validateFields } = require("../utils/checkRequiredFields")
 
 
 const getAllProduct = async (req, res) => {
@@ -64,20 +65,46 @@ const getProductById = async (req, res) => {
 
 
 const addProduct = async (req, res) => {
-    const { name } = req.body;
-    const data = await categoryModal.create({ name });
-    if (data) {
-        res.json({
-            status: 204,
-            message: "created successfully",
-            data: data
-        })
-    } else {
-        res.json({
-            status: 500,
-            message: "failed",
-            data: data
-        })
+    try {
+        const { name, descripation, category, gender, varient } = req.body;
+        if (typeof name == "undefined" || name.trim() === "") {
+            return  res.json(new ApiResponse(400, null, "provide name"));
+         }
+         if (typeof descripation == "undefined" || descripation.trim() === "") {
+            return  res.json(new ApiResponse(400, null, "provide descripation"));
+         } 
+         if (typeof category == "undefined" || category.trim() === "") {
+            return  res.json(new ApiResponse(400, null, "provide category"));
+         } 
+         if (typeof gender == "undefined" || gender.trim() === "") {
+            return  res.json(new ApiResponse(400, null, "provide gender"));
+         }
+          if (typeof varient == "undefined" || varient.trim() === "") {
+            return  res.json(new ApiResponse(400, null, "provide varient"));
+         }
+
+         if(typeof varient == "undefined" && varient !== null && Array.isArray(varient) && varienta.length <= 0 ){
+            return  res.json(new ApiResponse(400, null, "provide varient"));
+         }
+   
+
+        const data = await productModal.create({ name, descripation, gender, varient, category });
+        if (data) {
+            res.json({
+                status: 204,
+                message: "created successfully",
+                data: data
+            })
+        } else {
+            res.json({
+                status: 500,
+                message: "failed",
+                data: data
+            })
+        }
+    } catch (error) {
+        res.json(new ApiResponse(500, error, INTERNAL_SERVER_ERROR));
+
     }
 
 }

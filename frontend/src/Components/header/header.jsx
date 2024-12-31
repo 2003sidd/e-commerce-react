@@ -4,8 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Link, NavLink } from 'react-router-dom';
 import useUserContext from '../../context/UserContext';
+import api from '../../utilities/apiCall';
 const Header = () => {
   const { userDetails } = useUserContext();
+
+  const apiCall = ()=>{
+    api.get("route/api/category")
+  }
 
   return (
 
@@ -14,7 +19,7 @@ const Header = () => {
         Your Sole Mate Awaits.
       </header>
       <nav className='nav'>
-        <h1 className='text-2xl font-bold'>
+        <h1 onClick={apiCall} className='text-2xl font-bold'>
           Footwear Fusion
         </h1>
         <ul className="navList flex">

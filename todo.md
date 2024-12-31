@@ -28,11 +28,10 @@ gender (For) ??
 
 
 backend:
-refresh token 🙌
+
+
+
 multer + image 
-search 
-pagination 🙌
-product upsert
 
 
 

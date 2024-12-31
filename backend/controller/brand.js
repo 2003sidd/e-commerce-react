@@ -6,14 +6,38 @@ const { DATA_NOT_FOUND, INTERNAL_SERVER_ERROR, BAD_REQUEST, NO_CONTENT_FOUND } =
 // get api for the category
 const getAllBrand = async (req, res) => {
     try {
-        const data = await brandModal.find();
+        const { index, top, searchBy } = req.body;
+        if (typeof index == "undefined" || typeof top == "undefined") {
+            res.json(new ApiResponse(400, null, "index and top is required"));
+        }
+
+        const skip = (index - 1) * top;
+
+        let data, count;
+
+        if (typeof searchBy == "undefined" || searchBy.trim() === "") {
+            data = await brandModal.find().skip(skip).limit(top);
+            count = await brandModal.countDocuments();
+
+        } else {
+            data = await brandModal.aggregate([
+                { $match: { name: { $regex: searchBy, $options: 'i' } } },
+                { $skip: skip },
+                { $limit: top }
+            ]);
+            count = await brandModal.countDocuments({ name: { $regex: searchBy, $options: 'i' } });
+        }
 
         if (data.length == 0) {
             res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
         } else {
-            res.json(new ApiResponse(200, data, "data found"));
+            res.json(new ApiResponse(200, {
+                "data": data,
+                "count": count
+            }, "data found"));
         }
     } catch (Error) {
+        console.log("error", Error)
         res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
 };
@@ -37,7 +61,7 @@ const deleteBrand = async (req, res) => {
 const updateBrand = async (req, res) => {
     try {
         const _id = req.params.id;
-        
+
         // Check if ID is provided and is valid
         if (!_id || !mongoose.Types.ObjectId.isValid(_id)) {
             return res.json(new ApiResponse(400, null, !_id ? 'ID parameter is missing' : 'Invalid ID format'));
@@ -47,10 +71,7 @@ const updateBrand = async (req, res) => {
         const updateData = req.body;
 
         // Find and update the category
-        const updatedBrand = await brandModal.findByIdAndUpdate(_id, updateData, {
-            new: true, // return the updated document
-            runValidators: true // validate before updating
-        });
+        const updatedBrand = await brandModal.findByIdAndUpdate(_id, updateData, { new: true, runValidators: true});
 
         if (updatedBrand) {
             res.json(new ApiResponse(200, updatedBrand, "Updated successfully"));

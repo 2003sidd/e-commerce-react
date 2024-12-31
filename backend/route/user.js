@@ -1,5 +1,5 @@
 const express= require("express");
-const { signUpUserHandler, loginUserHandler, updateUser } = require("../controller/user");
+const { signUpUserHandler, loginUserHandler, updateUser, refreshToken } = require("../controller/user");
 
 const router= express.Router();
 
@@ -8,6 +8,8 @@ router.route("/signup").post(signUpUserHandler);
 
 // for loggin user
 router.route("/login").post(loginUserHandler);
+
+router.route("/refreshToken").post(refreshToken);
 
 router.route('/').get(updateUser);
 

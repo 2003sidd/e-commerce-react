@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const variantSchema = new mongoose.schema({
+const variantSchema = new mongoose.Schema({
     size:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Size"
@@ -23,7 +23,7 @@ const variantSchema = new mongoose.schema({
     }
 })
 
-const productSchema = new mongoose.schema({
+const productSchema = new mongoose.Schema({
     name: {
         type: String,
         require: true
@@ -36,7 +36,7 @@ const productSchema = new mongoose.schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category"
     }],
-    for: {
+    gender: {
         type: String,
         enum: ['Male', 'Female', 'Unisex'],
         required: true
