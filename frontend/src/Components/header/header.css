@@ -10,6 +10,10 @@
     margin: auto;
     padding-block: 0.8rem;
  }
+ marquee{
+   margin-top: 4px;
+    padding-block: 4px;
+ }
  li{
    margin-inline: 1.5rem;
    font-size: 1.1rem;
@@ -21,12 +25,14 @@
   li:hover{
    border: 0.5px solid #a09999;
   }
+
   
+  .color-primary{
+   color: #DB4444;
+  }
 
   header{
    background-color: black;
-   text-align: center;
-   padding-block: 6px;
    color: #ffffff;
   }
 .active{

@@ -31,11 +31,3 @@ db.on('disconnected', () => {
 
 // Export the database connection
 module.exports = db;
-
-// mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-//     .then(() => {
-//         console.log("Connected to MongoDB");
-//     })
-//     .catch((err) => {
-//         console.log("Error connecting to MongoDB:", err.message);
-//     });

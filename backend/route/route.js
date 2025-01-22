@@ -67,10 +67,10 @@ router.route('/deleteColor/:id').delete(jwtAuthMiddleware, deleteColor);
 
 // routes related to brand CRUD
 router.route('/brand').post( getAllBrand);
-router.route('/brandById/:id').get(jwtAuthMiddleware, getBrandById);
+router.route('/brandById/:id').get( getBrandById);
 router.route('/addbrand').post( addBrand);
-router.route('/updatebrand/:id').post(jwtAuthMiddleware, updateBrand);
-router.route('/deletebrand/:id').delete(jwtAuthMiddleware, deleteBrand);
+router.route('/updatebrand/:id').post( updateBrand);
+router.route('/deletebrand/:id').delete( deleteBrand);
 router.route('/product/add').post(addProduct)
 
 

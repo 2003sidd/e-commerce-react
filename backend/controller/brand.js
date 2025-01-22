@@ -54,6 +54,8 @@ const deleteBrand = async (req, res) => {
             res.json(new ApiResponse(204, null, NO_CONTENT_FOUND));
         }
     } catch (error) {
+        console.log("error", Error)
+
         res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
 }
@@ -90,7 +92,7 @@ const getBrandById = async (req, res) => {
         const { id } = req.params;
         // Check if ID is provided
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-            res.json(new ApiResponse(400, null, !id ? 'ID parameter is missing' : 'Invalid ID format',));
+            return res.json(new ApiResponse(400, null, !id ? 'ID parameter is missing' : 'Invalid ID format',));
         }
 
         // Find the category by ID

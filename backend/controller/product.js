@@ -83,10 +83,36 @@ const addProduct = async (req, res) => {
             return  res.json(new ApiResponse(400, null, "provide varient"));
          }
 
-         if(typeof varient == "undefined" && varient !== null && Array.isArray(varient) && varienta.length <= 0 ){
+         if(typeof varient == "undefined" && varient !== null && Array.isArray(varient) && varient.length <= 0 ){
             return  res.json(new ApiResponse(400, null, "provide varient"));
          }
    
+
+         for(let i=0;i<varient.length;i++){
+            const v = variant[i];
+
+            if (!v.size || !Array.isArray(v.size) || v.size.length === 0) {
+              return res.json(new ApiResponse(400, null, `Variant ${i + 1}: Provide valid size`));
+            }
+        
+            if (!v.color || typeof v.color !== "string" || v.color.trim() === "") {
+              return res.json(new ApiResponse(400, null, `Variant ${i + 1}: Provide valid color`));
+            }
+        
+            if (!v.image || !Array.isArray(v.image) || v.image.length === 0) {
+              return res.json(new ApiResponse(400, null, `Variant ${i + 1}: Provide at least one image`));
+            }
+        
+            if (typeof v.price !== "number" || v.price <= 0) {
+              return res.json(new ApiResponse(400, null, `Variant ${i + 1}: Provide a valid price`));
+            }
+        
+            if (typeof v.stock !== "number" || v.stock < 0) {
+              return res.json(new ApiResponse(400, null, `Variant ${i + 1}: Provide valid stock quantity`));
+            }
+          }
+
+          
 
         const data = await productModal.create({ name, descripation, gender, varient, category });
         if (data) {

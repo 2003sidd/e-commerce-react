@@ -1,47 +1,56 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useNavigation } from "react-router-dom";
+import api from "../../utilities/apiCall";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { faShoppingCart, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 const BrandList = () => {
+    const navigation = useNavigate();
 
     const [dataState, setDataState] = useState({
         data: [],    // Array to store data
         status: 0,   // Number to indicate status
         message: '',  // String for messages
     });
-
+ const [currentIndex,setIndex]=useState(1);
     async function deleteItem(id) {
-        const response = await fetch("http://localhost:8800/route/api/deleteSize/" + id, {
-            method: "Delete"
-        });
-        if (response.ok) {
-
-            let res = await response.json()
-            console.log("response is", res)
-            // setData(data.res)
-            // chngeShowe(false);
-
-
+        try{
+            console.log(" value is"+id)
+            const data = await api.delete(`deletebrand/`+id);
+            if(data?.data){
+                fetchData()
+            }
+            console.log('Data fetched:', data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+      
         }
+
     }
-    async function editItem(id) { }
+    async function editItem(id) {
+        const queryParams = new URLSearchParams({
+            id: id,
+          });
+        navigation(`../addBrand?${queryParams.toString()}`);
+
+     }
 
     async function fetchData() {
-        try {
-            const response = await fetch("http://localhost:8800/route/api/brand");
 
-            if (response.ok) {
-
-                let data = await response.json()
-                console.log("response is", data);
-                setDataState({
-                    data: data.data || [], // Ensure you handle the structure correctly
-                    status: data.status || 0,
-                    message: data.message || '',
-                });
-                // chngeShowe(false);
+        try{
+            const payload = {
+                index:currentIndex,
+                top:5
             }
-
+            const data = await api.post(`brand`,payload)
+            console.log('Data fetched:', data);
+            setDataState({
+                data: data.data.data || [], // Ensure you handle the structure correctly
+                status: data.status || 0,
+                message: data.message || '',
+            });
         } catch (error) {
-            console.log("error is", error);
+          console.error('Error fetching data:', error);
         }
 
     }
@@ -84,8 +93,14 @@ const BrandList = () => {
                                     <tr key={row._id} className="my-2 t-b-2">
                                         <td className="w-1/5 p-2 text-center">{row._id}</td>
                                         <td className="w-1/5 p-2 text-center">{row.name}</td>
-                                        <td onClick={() => editItem(row._id)} className="w-1/5 p-2 text-center">Edit</td>
-                                        <td onClick={() => deleteItem(row._id)} className="w-1/5 p-2 text-center">Delete</td>
+                                        <td onClick={() => editItem(row._id)} className="w-1/5 p-2 text-center">
+                                        <FontAwesomeIcon icon={faEdit} />
+                                            
+                                        </td>
+                                        <td onClick={() => deleteItem(row._id)} className="w-1/5 p-2 text-center">  
+
+                                             <FontAwesomeIcon icon={faTrash} />
+                                        </td>
                                     </tr>
                                 ))
                             ) : (

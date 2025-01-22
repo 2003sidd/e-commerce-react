@@ -19,6 +19,10 @@ import SizeList from './AdminComponent/size/sizeList.jsx'
 import ColorList from './AdminComponent/color/colorList.jsx'
 import SizeUpsert from './AdminComponent/size/sizeUpsert.jsx'
 import ColorUpsert from './AdminComponent/color/colorUpsert.jsx'
+import Cart from './Components/cart/cart.jsx'
+import Order from './Components/orders/order.jsx'
+import Wishlist from './Components/wishtlist/wishlist.jsx'
+import Checkout from './Components/checkout/checkout.jsx'
 import BrandUpsert from './AdminComponent/brand/brandUpsert.jsx'
 import BrandList from './AdminComponent/brand/brandlist.jsx'
 import UserFormArray from './AdminComponent/users/user.jsx'
@@ -39,6 +43,13 @@ const route = createBrowserRouter(
                 <Route path='signup' element={<SignUp />} />
                 <Route path="collection/:gender" element={<Collection />} />
                 <Route path="userProfile" element="userProfile" />
+                <Route path="cart" element={<Cart />} />
+                <Route path="orders" element={<Order />} />
+                <Route path="wishlist" element={<Wishlist />} />
+                <Route path="checkout" element={<Checkout />} />
+
+
+
                 <Route path='admin' element={<Dashboard />} >
                     <Route path='' element={<CategoryUpsertWithProps comp="size" />} />
                     <Route path='size' element={<SizeList/>} />

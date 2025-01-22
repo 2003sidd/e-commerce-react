@@ -79,6 +79,7 @@ const getCategoryById = async (req, res) => {
 
         // Find the category by ID
         const data = await categoryModal.findById(id);
+      
 
         // Check if data is found
         if (data) {

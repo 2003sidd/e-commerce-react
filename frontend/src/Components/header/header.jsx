@@ -8,7 +8,7 @@ import api from '../../utilities/apiCall';
 const Header = () => {
   const { userDetails } = useUserContext();
 
-  const apiCall = ()=>{
+  const apiCall = () => {
     api.get("route/api/category")
   }
 
@@ -16,10 +16,13 @@ const Header = () => {
 
     <>
       <header>
-        Your Sole Mate Awaits.
+        <marquee direction="left" scrollamount="10">
+          Your Sole Mate Awaits.
+
+        </marquee>
       </header>
       <nav className='nav'>
-        <h1 onClick={apiCall} className='text-2xl font-bold'>
+        <h1 onClick={apiCall} className='text-2xl font-bold color-primary'>
           Footwear Fusion
         </h1>
         <ul className="navList flex">
@@ -44,18 +47,22 @@ const Header = () => {
         </ul>
         <div className='nav-btn'>
           <button className='mx-4'>
-            <FontAwesomeIcon icon={faShoppingCart} />
+            <Link to='/cart'>
+              <FontAwesomeIcon icon={faShoppingCart} />
+            </Link>
           </button>
           <button className='mx-4'>
-            <FontAwesomeIcon icon={faHeart} />
+            <Link to='/wishlist'>
+              <FontAwesomeIcon icon={faHeart} />
+            </Link>
           </button>
           <button className='mx-2'>
-          {userDetails ==null?
-            <Link to='/login'>
-              <FontAwesomeIcon icon={faUser} />
-            </Link>: <Link to='/contact'>
-              <FontAwesomeIcon icon={faUser} />
-            </Link>}
+            {userDetails == null ?
+              <Link to='/login'>
+                <FontAwesomeIcon icon={faUser} />
+              </Link> : <Link to='/contact'>
+                <FontAwesomeIcon icon={faUser} />
+              </Link>}
           </button>
         </div>
       </nav>

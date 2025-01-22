@@ -1,13 +1,12 @@
 .footer{
-    background-color: #dfdfdf;
+    background-color: #DB4444;
     padding: 1rem 3rem;
 }
 .footer-container{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-
+    margin-block: 1rem;
 }
-hr{
-    height: 2px;
-    color: rgb(56, 49, 49);
+.colume{
+    color: white;
 }
