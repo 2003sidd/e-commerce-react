@@ -5,70 +5,82 @@ import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import './home.css';
-import useUserContext from "../context/UserContext";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { motion } from 'framer-motion';
+import { products } from '../data/products';
+import HeroSlider from "./HeroSlider/heroSlider";
+import ProductGrid from "./productGrid/ProductGrid";
+
+
 const Home = () => {
-    const [num, changeNum] = useState(0);
-    const { userDetails, setUserDetails } = useUserContext();
 
-    const slideLeft = () => {
-        let slider = document.getElementById('slider');
-        slider.scrollLeft = slider.scrollLeft - 500;
-    }
-    const slideRight = () => {
-        let slider = document.getElementById('slider');
-        slider.scrollLeft = slider.scrollLeft + 500;
-        
-    }
-
-    const notify = () => {
-        toast.error("Success Notification !", {
-            position: "top-right"
-          });
-    console.log("Toast message")
-    }
-
-    
-
-    function naviagate() {
-        const queryParams = { sort: 'price', order: 'asc' };
-        const searchParams = new URLSearchParams(queryParams);
-        console.log(searchParams.toString())
-
-        // naviagate(`/products?${searchParams.toString()}`);
-    }
-
-    function test() {
-        changeNum(num => num + 1);
+    const popularProducts = products.filter(p => p.isPopular);
+    const latestProducts = products.filter(p => p.isLatest);
 
 
-        let x = num;
-        console.log("number may suprise you", x);
-    }
 
     return (
-        <div className="home" >
-             <ToastContainer />
-            {/*home page image  */}
-            <img src="src/assets/images/home.jpg" className="home-image" />
+        <>
 
-            {/* shoe by collection */}
-            <div className="collection">
-                <div className="men">
-                    <span onClick={test}>Men {num}</span>
-                    <img src="src/assets/images/maleShoe.jpg" />
-                </div>
-                <div className="women">
-                <span>Women</span>
-                <img src="src/assets/images/femaleShoe.jpg" />
-                </div>
+            <div>
+                <HeroSlider />
+
+                <section className="container flex flex-col mx-auto px-4 py-16 flex flex-col">
+                    <div className="grid md:grid-cols-2 gap-8 mb-16">
+                        <Link to="/collection/men">
+                            <motion.div
+                                whileHover={{ scale: 1.02 }}
+                                className="relative h-96 rounded-lg overflow-hidden"
+                            >
+                                <img
+                                    src="https://images.unsplash.com/photo-1527010154944-f2241763d806"
+                                    alt="Men's Collection"
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                                    <h2 className="text-white text-4xl font-bold">Men's Collection</h2>
+                                </div>
+                            </motion.div>
+                        </Link>
+
+                        <Link to="/collection/women">
+                            <motion.div
+                                whileHover={{ scale: 1.02 }}
+                                className="relative h-96 rounded-lg overflow-hidden"
+                            >
+                                <img
+                                    src="https://images.unsplash.com/photo-1535043934128-cf0b28d52f95"
+                                    alt="Women's Collection"
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                                    <h2 className="text-white text-4xl font-bold">Women's Collection</h2>
+                                </div>
+                            </motion.div>
+                        </Link>
+                    </div>
+
+                    <div className="mb-16">
+                        <h2 className="text-3xl font-bold mb-8">Popular Products</h2>
+                        <ProductGrid products={popularProducts} />
+                    </div>
+
+                    <div className="mb-16">
+                        <h2 className="text-3xl font-bold mb-8">Latest Arrivals</h2>
+                        <ProductGrid products={latestProducts} />
+                    </div>
+                </section>
             </div>
 
+
             {/* home page slider of reccommanded or top product */}
-            <div className="relative flex items-center">
+            {/* <div className="relative flex items-center">
                 <MdChevronLeft size={40} className="cursor-pointer bg-gray-300 product-slide" onClick={slideLeft} />
                 <div id="slider" className="w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth scrollbar-hide">
                     <div className="w-[220px] inline-block p-2 cursor-pointer">
-                        <img path="" className="image"/>
+                        <img path="" className="image" />
                     </div>
                     <div className="w-[220px] h-[220px] inline-block p-2 cursor-pointer">{userDetails?.name}</div>
                     <div className="w-[220px] inline-block p-2 cursor-pointer" onClick={() => setUserDetails({ name: "sidd", age: 19 })}
@@ -81,12 +93,12 @@ const Home = () => {
                     <div className="w-[220px] inline-block p-2 cursor-pointer">item9</div>
                 </div>
                 <MdChevronRight className="cursor-pointer bg-gray-300 product-slide" size={40} onClick={slideRight} />
-            </div>
+            </div> */}
 
-            <button onClick={notify}>Notify!</button>
+
 
             <Card />
-        </div >
+        </ >
     );
 }
 export default Home;

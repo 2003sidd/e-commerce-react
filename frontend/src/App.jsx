@@ -25,7 +25,9 @@ function App() {
     <>
       <UserContextProvider value={{ userDetails, setUserDetails }}>
         {!(isLoginPage || isHeaderPage) && <Header />}
+        <div className="min-h-[40vh]">
         <Outlet />
+        </div>
         {!(isLoginPage || isHeaderPage) && <Footer />}
 
       </UserContextProvider>

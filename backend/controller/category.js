@@ -6,18 +6,48 @@ const { DATA_NOT_FOUND, INTERNAL_SERVER_ERROR, BAD_REQUEST, NO_CONTENT_FOUND } =
 // get api for the category
 const getAllCateory = async (req, res) => {
     try {
-        // const data = await categoryModal.find();
-        const query = categoryModal.find();
-        console.log("query",query);
-        const data = await query.exec(); // Query executes here
-        console.log("data",data);
+try{
+    
+}catch(error){
+    console.log("Error",error);
+}
+        const { index, top, searchBy, isPagination } = req.body;
+        if(typeof isPagination === "undefined" || !isPagination){
+            const data =await categoryModal.find();
+            const count = await categoryModal.countDocuments();
 
-
-        if (data.length == 0) {
-            res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
-        } else {
-            res.json(new ApiResponse(200, data, "data found"));
+            if (data.length == 0) {
+              return res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
+            } else {
+               return res.json(new ApiResponse(200, {data, count}, "data found"));
+            }
         }
+
+        if(typeof index === "undefined" || typeof top === "undefined"){
+            return res.json(new ApiResponse(400, null, "index and top are required"));
+        }
+        let skip = top*(index-1);
+        let data,count;
+        if (!searchBy || searchBy.trim() === "") {
+            data = await categoryModal.find().skip(skip).limit(top);
+            count = await categoryModal.countDocuments();
+        } else {
+            data = await categoryModal.aggregate([
+                { $match: { name: { $regex: searchBy, $options: 'i' } } },
+                { $skip: skip },
+                { $limit: top }
+            ]);
+            count = await categoryModal.countDocuments({ name: { $regex: searchBy, $options: 'i' } });
+        }
+
+
+        if (data.length === 0) {
+            return res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
+        }
+
+        return res.json(new ApiResponse(200, { data, count }, "data found"));
+        // const data = await categoryModal.find();
+       
     } catch (Error) {
         res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }

@@ -62,10 +62,10 @@ const Login = () => {
                         <form className="w-full border-0" onSubmit={(e) => handleLogin(e)}>
                             <h1 className="text-center text-xl text-bold">Sign In</h1>
                         
-                                <input type="text" onChange={(e) => handleDataChange(e)} name="number" value={formData.number} placeholder="Number" className="input my-1 w-full px-2 py-1 rounded-lg" />
+                                <input type="text" onChange={(e) => handleDataChange(e)} name="number" value={formData.number} placeholder="Number" className=" my-1 w-full px-2 py-1 rounded-lg bg-gray-100 border-2 " />
                                 {error.number && <span className="text-red-500">Number is required</span>}
                            
-                                <input type="password" onChange={(e) => handleDataChange(e)} name="password" value={formData.password} placeholder="Password" className="input my-1  w-full px-2 py-1 rounded-lg" />
+                                <input type="password" onChange={(e) => handleDataChange(e)} name="password" value={formData.password} placeholder="Password" className=" my-1  w-full px-2 py-1 rounded-lg bg-gray-100 border-2 " />
                                 {error.password && <span className="text-red-500">Password is required</span>}
                     
                             <button className="w-full my-1 p-1 rounded-lg text-xl text-white" style={{backgroundColor:"var(--primary-color)"}} type="submit">Login</button>

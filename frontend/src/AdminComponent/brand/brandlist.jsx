@@ -82,9 +82,9 @@ const BrandList = () => {
                         <thead className="border-2 border-gray-400 bg-gray-200">
                             <tr>
                                 <th className="w-1/5 ">S no.</th>
-                                <th className="w-1/5">Name</th>
-                                <th className="w-1/5" >Edit</th>
-                                <th className="w-1/5">Delete</th>
+                                <th className="w-1/5">Image</th>
+                                <th className="w-1/5" >Name</th>
+                                <th className="w-1/5">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,14 +92,13 @@ const BrandList = () => {
                                 dataState.data.map(row => (
                                     <tr key={row._id} className="my-2 t-b-2">
                                         <td className="w-1/5 p-2 text-center">{row._id}</td>
-                                        <td className="w-1/5 p-2 text-center">{row.name}</td>
-                                        <td onClick={() => editItem(row._id)} className="w-1/5 p-2 text-center">
-                                        <FontAwesomeIcon icon={faEdit} />
-                                            
+                                        <td className="w-1/5 p-2 text-center"><img src={row.image} alt="" />
                                         </td>
-                                        <td onClick={() => deleteItem(row._id)} className="w-1/5 p-2 text-center">  
-
-                                             <FontAwesomeIcon icon={faTrash} />
+                                        <td className="w-1/5 p-2 text-center">{row.name}</td>
+                                        <td  className="w-1/5 p-2 text-center">
+                                        <FontAwesomeIcon onClick={() => editItem(row._id)} icon={faEdit} />
+                                        <FontAwesomeIcon className="ml-8" onClick={() => deleteItem(row._id)}  icon={faTrash} />
+                     
                                         </td>
                                     </tr>
                                 ))

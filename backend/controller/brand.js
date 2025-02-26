@@ -1,24 +1,44 @@
 const brandModal = require("../modals/brand-modal");
 const mongoose = require("mongoose");
+const uploadDocument = require("../utils/cloudnary")
 const { ApiResponse } = require("../utils/ApiResponse");
+const {ApiError} = require("../utils/ApiError")
 const { DATA_NOT_FOUND, INTERNAL_SERVER_ERROR, BAD_REQUEST, NO_CONTENT_FOUND } = require("../utils/constant");
+const { upload } = require("../utils/multer");
 
 // get api for the category
 const getAllBrand = async (req, res) => {
-    try {
-        const { index, top, searchBy } = req.body;
-        if (typeof index == "undefined" || typeof top == "undefined") {
-            res.json(new ApiResponse(400, null, "index and top is required"));
+
+    const { index, top, searchBy, isPagination } = req.body;
+
+    // Check if pagination is needed
+    if (typeof isPagination == "undefined" || !isPagination) {
+        try {
+            const data = await brandModal.find();
+            const count = await brandModal.countDocuments();
+            if (data.length === 0) {
+                return res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
+            }
+            return res.json(new ApiResponse(200, {data,count}, "data found"));
+        } catch (error) {
+            return res.status(500).json(new ApiResponse(500, null, "Internal server error"));
         }
+    }
 
-        const skip = (index - 1) * top;
+    // Check if pagination parameters are present
+    if (typeof index === "undefined" || typeof top === "undefined") {
+        return res.json(new ApiResponse(400, null, "index and top are required"));
+    }
 
+    const skip = (index - 1) * top;
+
+    try {
         let data, count;
 
-        if (typeof searchBy == "undefined" || searchBy.trim() === "") {
+        // Check if searchBy is provided
+        if (!searchBy || searchBy.trim() === "") {
             data = await brandModal.find().skip(skip).limit(top);
             count = await brandModal.countDocuments();
-
         } else {
             data = await brandModal.aggregate([
                 { $match: { name: { $regex: searchBy, $options: 'i' } } },
@@ -28,17 +48,14 @@ const getAllBrand = async (req, res) => {
             count = await brandModal.countDocuments({ name: { $regex: searchBy, $options: 'i' } });
         }
 
-        if (data.length == 0) {
-            res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
-        } else {
-            res.json(new ApiResponse(200, {
-                "data": data,
-                "count": count
-            }, "data found"));
+        if (data.length === 0) {
+            return res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
         }
-    } catch (Error) {
-        console.log("error", Error)
-        res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
+
+        return res.json(new ApiResponse(200, { data, count }, "data found"));
+
+    } catch (error) {
+        return res.status(500).json(new ApiResponse(500, null, "Internal server error"));
     }
 };
 
@@ -72,8 +89,16 @@ const updateBrand = async (req, res) => {
         // Extract the update data from the request body
         const updateData = req.body;
 
+        if(!updateBrand.name || updateBrand.name.trim() === ""){
+            return res.json(new ApiResponse(400, null,"Name is required field"));
+        }
+
+        if(!updateBrand.image || updateBrand.image.trim() === ""){
+            return res.json(new ApiResponse(400, null,"Name is required field"));
+        }
+
         // Find and update the category
-        const updatedBrand = await brandModal.findByIdAndUpdate(_id, updateData, { new: true, runValidators: true});
+        const updatedBrand = await brandModal.findByIdAndUpdate(_id, updateData, { new: true, runValidators: true });
 
         if (updatedBrand) {
             res.json(new ApiResponse(200, updatedBrand, "Updated successfully"));
@@ -113,19 +138,28 @@ const getBrandById = async (req, res) => {
 const addBrand = async (req, res) => {
     try {
         const { name } = req.body;
+        console.log("req file",req.file)
 
         //check name
         if (typeof name == "undefined" || name.trim() === "") {
             res.json(new ApiResponse(400, null, "provide name"));
         }
 
-        const data = await brandModal.create({ name });
+        const coverImageLocalPath = req.file?.path
+
+        if (!coverImageLocalPath) {
+            throw new ApiError(400, "Cover image file is missing")
+        }
+    
+        const image = await uploadDocument.uploadDocument(coverImageLocalPath);
+        const data = await brandModal.create({ name,image : image.url });
         if (data) {
             res.json(new ApiResponse(201, data, "created successfully"));
         } else {
             res.json(new ApiResponse(204, null, "failed"));
         }
     } catch (Error) {
+        console.log("error",Error)
         res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
 }

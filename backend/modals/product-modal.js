@@ -17,10 +17,10 @@ const variantSchema = new mongoose.Schema({
         type:Number,
         require:true
     },
-    stock:{
-        type:Number,
-        default:0
-    }
+    // stock:{
+    //     type:Number,
+    //     default:0
+    // }
 })
 
 const productSchema = new mongoose.Schema({

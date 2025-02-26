@@ -31,8 +31,13 @@ const jwtAuthMiddleware = (req, res, next) => {
 
 // Function to generate JWT token
 const generateToken = (userData) => {
+    const data = {
+        name:userData.name,
+        email:userData.email,
+        number:userData.number
+    }
     // Generate a new JWT token using user data
-    return jwt.sign(userData, process.env.JWT_SECRET, {expiresIn: 120});
+    return jwt.sign(data, process.env.JWT_SECRET, {expiresIn: 120});
 }
 
 const generateRefreshToken = (userData) => {

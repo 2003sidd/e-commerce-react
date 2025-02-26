@@ -9,6 +9,9 @@ const apiClient = axios.create({
   },
 });
 
+
+
+
 // Add a request interceptor (optional)
 apiClient.interceptors.request.use(
   (config) => {
@@ -19,6 +22,12 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+
+      // If the request contains FormData, do not manually set the Content-Type
+      if (config.data instanceof FormData) {
+        delete config.headers['Content-Type']; // Remove Content-Type to let the browser set it
+      }
     return config;
   },
   (error) => {

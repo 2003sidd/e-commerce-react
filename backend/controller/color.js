@@ -1,20 +1,51 @@
 const { colorModal } = require("../modals/color-modal");
+const { search } = require("../route/route");
 const { ApiResponse } = require("../utils/ApiResponse");
-const { INTERNAL_SERVER_ERROR } = require("../utils/constant");
+const { INTERNAL_SERVER_ERROR, DATA_NOT_FOUND } = require("../utils/constant");
 
 
 // get api for the category
 const getAllColor = async (req, res) => {
     try {
-        const data = await colorModal.find();
 
-        if (data.length == 0) {
-            res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
-        } else {
-            res.json(new ApiResponse(200, data, "data found"));
+        const { top, index, searchBy, isPagination } = req.body;
+
+        if (typeof isPagination === "undefined" || !isPagination) {
+            const data = await colorModal.find();
+
+            if (data.length == 0) {
+                return res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
+            } else {
+                return res.json(new ApiResponse(200, data, "data found"));
+            }
         }
+
+        if (typeof index === "undefined" || typeof top === "undefined") {
+            return res.status(400).json(new ApiResponse(400, null, "index and top are required fields"))
+        }
+        let skip = (index - 1) * top;
+        let data, count;
+        if (!searchBy || searchBy.trim() === "") {
+            data = await colorModal.aggregate([
+                { $match: { name: { $regex: searchBy, $options: 'i' } } },
+                { $skip: skip },
+                { $limit: top }
+            ]);
+            count = await colorModal.countDocuments();
+        } else {
+            data = await colorModal.find();
+            count = await colorModal.countDocuments();
+        }
+
+        if (data.length === 0) {
+            return res.json(new ApiResponse(200, null, "No data found"))
+        }
+
+        return res.json(new ApiResponse(200, { data, count }, "Data found"));
+
     } catch (Error) {
-        res.json(new ApiResponse(500, Error.error, INTERNAL_SERVER_ERROR));
+        console.log("error",Error)
+        res.status(500).json(new ApiResponse(500, Error.error, INTERNAL_SERVER_ERROR));
     }
 };
 
@@ -62,7 +93,7 @@ const getColorById = async (req, res) => {
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             res.json(new ApiResponse(400, null, !id ? 'ID parameter is missing' : 'Invalid ID format',));
         }
-        console.log("id is",id);
+        console.log("id is", id);
 
         // Find the category by ID
         const data = await colorModal.findById(id);
@@ -81,11 +112,22 @@ const getColorById = async (req, res) => {
 
 const addColor = async (req, res) => {
     try {
-        const { name,image } = req.body;
+        const { name } = req.body;
 
-     
+        if (!name) {
+            return res.json(new ApiResponse(400, null, "Name is required field"))
+        }
 
-        const data = await colorModal.create({ name ,image});
+        const colorImage = req.file?.path
+
+        if (!colorImage) {
+            throw new ApiError(400, "Cover image file is missing")
+        }
+
+        const image = await uploadDocument.uploadDocument(colorImage);
+
+
+        const data = await colorModal.create({ name, image:image.url });
         if (data) {
             res.json(new ApiResponse(201, data, "created successfully"));
         } else {
@@ -97,7 +139,7 @@ const addColor = async (req, res) => {
 }
 const addSize = async (req, res) => {
     try {
-        const { name,image } = req.body;
+        const { name, image } = req.body;
 
         //check name
         // if (typeof name == "undefined" || name.trim() === "") {
