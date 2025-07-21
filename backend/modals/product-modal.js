@@ -1,27 +1,6 @@
 const mongoose = require("mongoose");
+const variantSchema = require("./Product-vareient-modal");
 
-const variantSchema = new mongoose.Schema({
-    size:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Size"
-    }],
-    color:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Color"
-    },
-    image:{
-        type:[String],
-        require:true
-    },
-    price:{
-        type:Number,
-        require:true
-    },
-    // stock:{
-    //     type:Number,
-    //     default:0
-    // }
-})
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -45,6 +24,8 @@ const productSchema = new mongoose.Schema({
         type:[variantSchema],
         require:true
     }
+},{
+    timestamps:true
 });
 
 const productModal=mongoose.model("Product",productSchema); 

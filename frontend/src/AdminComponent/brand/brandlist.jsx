@@ -89,9 +89,9 @@ const BrandList = () => {
                         </thead>
                         <tbody>
                             {Array.isArray(dataState.data) && dataState.data.length > 0 ? (
-                                dataState.data.map(row => (
+                                dataState.data.map((row,index) => (
                                     <tr key={row._id} className="my-2 t-b-2">
-                                        <td className="w-1/5 p-2 text-center">{row._id}</td>
+                                                     <td className="w-1/5 p-2 text-center">{index+1}</td>
                                         <td className="w-1/5 p-2 text-center"><img src={row.image} alt="" />
                                         </td>
                                         <td className="w-1/5 p-2 text-center">{row.name}</td>

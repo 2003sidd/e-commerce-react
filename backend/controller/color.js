@@ -1,7 +1,9 @@
 const { colorModal } = require("../modals/color-modal");
 const { search } = require("../route/route");
 const { ApiResponse } = require("../utils/ApiResponse");
+const {ApiError} = require("../utils/ApiError")
 const { INTERNAL_SERVER_ERROR, DATA_NOT_FOUND } = require("../utils/constant");
+const { uploadDocument } = require("../utils/cloudnary");
 
 
 // get api for the category
@@ -124,7 +126,7 @@ const addColor = async (req, res) => {
             throw new ApiError(400, "Cover image file is missing")
         }
 
-        const image = await uploadDocument.uploadDocument(colorImage);
+        const image = await uploadDocument(colorImage);
 
 
         const data = await colorModal.create({ name, image:image.url });
@@ -134,6 +136,7 @@ const addColor = async (req, res) => {
             res.json(new ApiResponse(204, null, "failed"));
         }
     } catch (Error) {
+        console.log("Error",Error)
         res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
 }

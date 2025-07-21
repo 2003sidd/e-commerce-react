@@ -46,6 +46,68 @@ const getAllProduct = async (req, res) => {
     }
 };
 
+const getRecentProduct = async (req,res) => {
+    try {
+        const data = await productModal.find().sort({ createdAt: -1 })
+        if(data){
+        return res.json(new ApiResponse(200, { data, count }, "Data found"))
+        }
+        return res.json(new ApiResponse(200, null, "no data found"))
+    
+    } catch (error) {
+        res.json(new ApiResponse(500, null, INTERNAL_SERVER_ERROR));
+        
+    }
+}
+
+
+const getCategoryProduct = async (req, res) => {
+    try {
+
+        const { top, index, searchBy, isPagination,categoryId } = req.body;
+        if(categoryId !== "undefined"){
+
+        if (typeof isPagination === "undefined" || !isPagination) {
+            const data = await productModal.find();
+            const count = await productModal.countDocuments();
+            if (data.length == 0) {
+                res.json(new ApiResponse(200, null, NO_CONTENT_FOUND));
+            } else {
+                res.json(new ApiResponse(200, { data, count }, "data found"));
+            }
+        }
+
+        if (typeof top === "undefined" || typeof index === "undefined") {
+            return res.json(new ApiResponse(400, null, "top and index is required fields"))
+        }
+        let skip = (index - 1) * top;
+        let data, count;
+        if (!searchBy || searchBy.trim() === "") {
+            data = await productModal.find();
+            count = await productModal.countDocuments();
+        } else {
+
+            data = await productModal.aggregate([
+                { $match: { name: { $regex: searchBy, $options: 'i' } } },
+                { $skip: skip },
+                { $limit: top }
+            ]);
+            count = await productModal.countDocuments();
+        }
+
+        if (data.length === 0) {
+            return res.json(new ApiResponse(200, null, "no data found"))
+        }
+        return res.json(new ApiResponse(200, { data, count }, "Data found"))
+    }
+else{
+    return res.json(new ApiResponse(200, null, "Issue with category id"))
+}
+    } catch (error) {
+        res.json(new ApiResponse(500, null, INTERNAL_SERVER_ERROR));
+    }
+};
+
 const deleteProduct = async (req, res) => {
     try {
         const _id = req.params.id;
@@ -74,13 +136,13 @@ const getProductById = async (req, res) => {
         const _id = req.params.id;
         const data = await productModal.findById({ _id });
         if (data) {
-            res.json({
+           return  res.json({
                 status: 200,
                 message: "data found",
                 data: data
             });
         }
-        res.json(new ApiResponse(500, null, INTERNAL_SERVER_ERROR));
+       
         res.json({
             status: 200,
             message: "data not found",
@@ -108,7 +170,7 @@ const addProduct = async (req, res) => {
         if (typeof gender == "undefined" || gender.trim() === "") {
             return res.json(new ApiResponse(400, null, "provide gender"));
         }
-        if (typeof varient == "undefined" || varient.trim() === "") {
+        if (typeof varient == "undefined" || !Array.isArray(varient) ) {
             return res.json(new ApiResponse(400, null, "provide varient"));
         }
 
@@ -116,10 +178,10 @@ const addProduct = async (req, res) => {
             return res.json(new ApiResponse(400, null, "provide varient"));
         }
 
-
+        console.log("varient is",varient)
         for (let i = 0; i < varient.length; i++) {
-            const v = variant[i];
-
+            const v = varient[i];
+                console.log("v size is",v.size)
             if (!v.size || !Array.isArray(v.size) || v.size.length === 0) {
                 return res.json(new ApiResponse(400, null, `Variant ${i + 1}: Provide valid size`));
             }
@@ -128,7 +190,7 @@ const addProduct = async (req, res) => {
                 return res.json(new ApiResponse(400, null, `Variant ${i + 1}: Provide valid color`));
             }
 
-            if (!v.image || !Array.isArray(v.image) || v.image.length === 0) {
+            if (!v.images || !Array.isArray(v.images) || v.images.length === 0) {
                 return res.json(new ApiResponse(400, null, `Variant ${i + 1}: Provide at least one image`));
             }
 
@@ -158,9 +220,10 @@ const addProduct = async (req, res) => {
             })
         }
     } catch (error) {
+        console.log("Error is",error)
         res.json(new ApiResponse(500, error, INTERNAL_SERVER_ERROR));
 
     }
 
 }
-module.exports = { getAllProduct, addProduct, getProductById, updateProduct, deleteProduct };
+module.exports = { getAllProduct, addProduct, getProductById, updateProduct, deleteProduct , getCategoryProduct, getRecentProduct};

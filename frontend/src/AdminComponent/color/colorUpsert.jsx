@@ -1,33 +1,56 @@
 import React, { useState } from "react";
+import api from "../../utilities/apiCall";
+import { ToastContainer, toast } from 'react-toastify';
 const ColorUpsert = () => {
 
-    const [name, setName] = useState("sidd");
+    const [name, setName] = useState("");
     const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [error, setError] = useState(null)
+
+    const checkValidation=()=>{
+        let isErrorOccured = false;
+        const error = {}
+        if(!name || name.trim()!==""){
+            isErrorOccured = true;
+            error.name = "Name is required field"
+        }
+        if (!image || image === "") {
+            error.image = "Image is required";
+            isErrorOccured = true;
+        }
+
+        setError(error)
+        return isErrorOccured;
+
+    }
 
     async function upsetCategory() {
-        console.log("name is", name)
-
-        const bodyData = {
-            "name": name,
-            "image":image
-        }
-        const response = await fetch("http://localhost:8800/route/api/addColor", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json" // Set this header
-            },
-            body: JSON.stringify(bodyData)
-
-        });
-
-        if (response.status) {
-            let data = await response.json();
-            if(data.status){
-                setName(null)
+        if(!checkValidation()){
+            const formData = new FormData();
+            formData.append("name", name);
+    
+            // Check if there's an image file to append
+            if (image) {
+                formData.append("image", image);  // Append the actual file object here
             }
-        } else {
-            // handle api failure 
+    
+            const response = await api.post("addColor", formData)
+    
+    
+            if (response.data && Object.keys(response.data).length !== 0) {
+                let data = await response.data;
+    
+                setName(null)
+    
+            } else {
+                // handle api failure 
+                toast.error(response?.message ? response?.message : "Something went wrong!", {
+                    position: "top-right"
+                });
+            }
         }
+       
     }
 
 
@@ -36,49 +59,37 @@ const ColorUpsert = () => {
             return;
         }
         var file = event.target.files[0];
-        
+
 
         // Call the function to convert image to Base64
-        imageToBase64(file, function (base64Str) {
-            setImage(base64Str);
-
-        });
+        setImage(file)
+        setImagePreview(URL.createObjectURL(file));  // To show image preview
     }
 
-
-    // Function to convert image to Base64
-    function imageToBase64(file, callback) {
-        // Create a FileReader object
-        var reader = new FileReader();
-
-        // Set the onload function of FileReader
-        reader.onload = function (e) {
-            // Get the Base64 string
-            var base64Str = e.target.result;
-            // Execute the callback function with the Base64 string as argument
-            callback(base64Str);
-        }
-
-        // Read the image file as a data URL
-        reader.readAsDataURL(file);
-    }
 
 
     return (
         <>
             <div className="flex flex-col justify-center items-center bg-gray-200">
                 <div className="w-1/2  border-1 border-gray-400 p-4 my-4 rounded-xl bg-white"  >
-                    <h1 className="text-center font-bold text-xl">Color</h1>
-                    <div className="mt-2">
-                        <label to="category">Color name</label>
-                        <input className="mt-2" htmlFor="categroy" onChange={(e) => setName(e.target.value)} type="text" name="categoryName" />
-                    </div>
-                    <div className="mt-2">
-                            <label to="category" >Image</label>
-                            <input onChange={(e) => takeImage(e)} htmlFor="categroy" type="file" name="categoryName" />
-                        </div>
+                <ToastContainer />
 
-                    <div className="text-center">
+                    <h1 className="text-center font-bold text-xl">Color</h1>
+                    <div className="mt-2 flex">
+                        <label to="category" className="font-semibold">Color name:</label>
+                        <input value={name} className="flex-1 ml-[4px] ml-[4px] px-4 border-[1px] border-gray-300 rounded-md focus:border-blue-500 focus:outline-none hover:border-gray-400 transition-colors" htmlFor="categroy" onChange={(e) => setName(e.target.value)} type="text" name="colorName" />
+                    </div>
+                    {error?.name && <span className="text-red-500 ml-2">{error.name}</span>}
+                    <div className="mt-2 flex">
+                        <label to="category" >Image</label>
+                        <input onChange={(e) => takeImage(e)} text={name} htmlFor="categroy" type="file" name="categoryName" />
+
+                    </div>
+                    {error?.image && <span className="text-red-500">{error.image}</span>}
+
+                    {imagePreview && (
+                        <img className="flex-1 h-[80px] aspect-h-1 aspect-w-1 " src={imagePreview} alt="Preview" width="100" />
+                    )}                    <div className="text-center">
                         <button onClick={upsetCategory} className="py-2 px-4 font-medium border-2 rounded-xl mt-2 text-white center bg-secondary">Add Color</button>
                     </div>
                 </div>

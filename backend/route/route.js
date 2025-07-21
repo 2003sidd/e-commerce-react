@@ -4,12 +4,13 @@ const { addSize, deleteSize, getAllSize, getSizeById, updateSize, getSizes } = r
 const { getAllColor, getColorById, addColor, updateColor, deleteColor } = require("../controller/color");
 const { deleteBrand, updateBrand, addBrand, getBrandById, getAllBrand } = require("../controller/brand");
 const { jwtAuthMiddleware } = require("../utils/jwt");
-const { addProduct, getAllProduct, getProductById, updateProduct } = require("../controller/product");
+const { addProduct, getAllProduct, getProductById, updateProduct, getCategoryProduct, getRecentProduct } = require("../controller/product");
 const {getData} = require("../controller/master")
 const categoryModal = require("../modals/category-modal");
 const router = express.Router();
 
-const {upload} = require("../utils/multer")
+const {upload} = require("../utils/multer");
+const { getAllCustomer } = require("../controller/user");
 
 router.route('/').get(async (req, resp) => {
     resp.end("it work well")
@@ -49,7 +50,7 @@ router.route('/user').post(async (req, resp) => {
 router.route('/category').get( getAllCateory);
 router.route('/category/:id').get(getCategoryById);
 router.route('/updateCategory/:id').get(updateCategory);
-router.route('/AddCategory').post(addCategory);
+router.route('/AddCategory').post(upload.single('image'), addCategory);
 router.route('/deleteCategory/:id').delete( deleteCategory);
 
 // routes related to size CRUD
@@ -94,11 +95,16 @@ router.route('/product/add').post(addProduct)
 
 // routes related to 
 router.route('/addProduct').post(addProduct);
-router.route('/getProducts').get(getAllProduct);
+router.route('/getProducts').post(getAllProduct);
+router.route('/getRecentProducts').get(getRecentProduct);
+router.route('/getProductsByCategory').post(getCategoryProduct);
 router.route('/getProduct').get(getProductById);
 router.route('/updateProduct').post(updateProduct)
 
 // master endpoints
 router.route("/getData").get(getData);
+
+// user routes
+router.route("/getUsers").post(getAllCustomer)
 
 module.exports = router; 

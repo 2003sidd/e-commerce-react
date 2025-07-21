@@ -2,7 +2,7 @@ const brandModal = require("../modals/brand-modal");
 const mongoose = require("mongoose");
 const uploadDocument = require("../utils/cloudnary")
 const { ApiResponse } = require("../utils/ApiResponse");
-const {ApiError} = require("../utils/ApiError")
+const { ApiError } = require("../utils/ApiError")
 const { DATA_NOT_FOUND, INTERNAL_SERVER_ERROR, BAD_REQUEST, NO_CONTENT_FOUND } = require("../utils/constant");
 const { upload } = require("../utils/multer");
 
@@ -19,7 +19,7 @@ const getAllBrand = async (req, res) => {
             if (data.length === 0) {
                 return res.json(new ApiResponse(200, null, DATA_NOT_FOUND));
             }
-            return res.json(new ApiResponse(200, {data,count}, "data found"));
+            return res.json(new ApiResponse(200, { data, count }, "data found"));
         } catch (error) {
             return res.status(500).json(new ApiResponse(500, null, "Internal server error"));
         }
@@ -89,12 +89,12 @@ const updateBrand = async (req, res) => {
         // Extract the update data from the request body
         const updateData = req.body;
 
-        if(!updateBrand.name || updateBrand.name.trim() === ""){
-            return res.json(new ApiResponse(400, null,"Name is required field"));
+        if (!updateBrand.name || updateBrand.name.trim() === "") {
+            return res.json(new ApiResponse(400, null, "Name is required field"));
         }
 
-        if(!updateBrand.image || updateBrand.image.trim() === ""){
-            return res.json(new ApiResponse(400, null,"Name is required field"));
+        if (!updateBrand.image || updateBrand.image.trim() === "") {
+            return res.json(new ApiResponse(400, null, "Name is required field"));
         }
 
         // Find and update the category
@@ -138,28 +138,36 @@ const getBrandById = async (req, res) => {
 const addBrand = async (req, res) => {
     try {
         const { name } = req.body;
-        console.log("req file",req.file)
+        console.log("req file", req.file);
+
+
+        const existingBrand = await brandModal.findOne({ name });
+
+        if (existingBrand) {
+            // If brand exists, return an error message
+            return res.status(400).json(new ApiError(400, "Brand not exist",null));
+        }
 
         //check name
         if (typeof name == "undefined" || name.trim() === "") {
-            res.json(new ApiResponse(400, null, "provide name"));
+         return   res.json(new ApiResponse(400, null, "provide name"));
         }
 
         const coverImageLocalPath = req.file?.path
 
         if (!coverImageLocalPath) {
-            throw new ApiError(400, "Cover image file is missing")
+            return new ApiError(400, "Cover image file is missing")
         }
-    
+
         const image = await uploadDocument.uploadDocument(coverImageLocalPath);
-        const data = await brandModal.create({ name,image : image.url });
+        const data = await brandModal.create({ name, image: image.url });
         if (data) {
             res.json(new ApiResponse(201, data, "created successfully"));
         } else {
             res.json(new ApiResponse(204, null, "failed"));
         }
     } catch (Error) {
-        console.log("error",Error)
+        console.log("error", Error)
         res.json(new ApiResponse(500, Error, INTERNAL_SERVER_ERROR));
     }
 }

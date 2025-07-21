@@ -12,9 +12,27 @@ dotenv.config();
 const signUpUserHandler = async (req, res) => {
     try {
         console.log(req.body)
-        const { name, email, password, number, address } = req.body;
+        const { name, email, password, number } = req.body;
 
-        const user = new userModal({ name, email, password, number, address: address || null })
+        if (!name || typeof name !== 'string' || name.trim().length < 2) {
+            return res.status(400).json({ error: 'Name is required and must be at least 2 characters.' });
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Valid email is required.' });
+        }
+
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
+        }
+
+            const numberRegex = /^[0-9]{10}$/; // Example: for 10-digit phone numbers
+            if (!number || !numberRegex.test(number)) {
+                return res.status(400).json({ error: 'A valid 10-digit phone number is required.' });
+            }
+
+        const user = new userModal({ name, email, password, number })
 
         user.save()
             .then((savedUser) => {
@@ -40,9 +58,18 @@ const signUpUserHandler = async (req, res) => {
 const loginUserHandler = async (req, res) => {
     try {
         // get the username and password 
-        const { name, password } = req.body;
+        const { email, password } = req.body;
 
-        const user = await userModal.findOne({ name });
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Valid email is required.' });
+        }
+
+        if (!password || password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
+        }
+
+        const user = await userModal.findOne({ email });
 
         if (user) {
             // console.log(userModal.fullName())
@@ -113,22 +140,22 @@ const updateUser = async (req, res) => {
 };
 
 
-const getAllCustomer = async () => {
+const getAllCustomer = async (req, res) => {
     try {
-        const {top, index, searchBy, isPagination} = req.body;
+        const { top, index, searchBy, isPagination } = req.body;
 
-        if(typeof isPagination === "undefined"|| !isPagination){
+        if (typeof isPagination === "undefined" || !isPagination) {
             const data = await userModal.find();
             const count = await userModal.countDocuments();
-            return res.json(new ApiResponse(200,{data,count},"User found"));
+            return res.json(new ApiResponse(200, { data, count }, "User found"));
         }
 
-        if(typeof top === "undefined"||typeof index === "undefined"){
-            return res.json(new ApiResponse(200,null,"Index and top are required"));
+        if (typeof top === "undefined" || typeof index === "undefined") {
+            return res.json(new ApiResponse(200, null, "Index and top are required"));
         }
 
         let skip = top * (index - 1);
-        let data,count ;
+        let data, count;
         if (!searchBy || searchBy.trim() === "") {
             data = await productModal.find();
             count = await productModal.countDocuments();
@@ -147,40 +174,40 @@ const getAllCustomer = async () => {
         return res.json(new ApiError(500, INTERNAL_SERVER_ERROR, null))
     }
 
-    const getUserById = async (req,res)=>{
+    const getUserById = async (req, res) => {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
 
             const data = await userModal.findById(id);
-            if(data){
-                return res.json(new ApiResponse(200,data,"User found"));
+            if (data) {
+                return res.json(new ApiResponse(200, data, "User found"));
             }
 
-            return res.json(new ApiResponse(200,null, "User not found"));
+            return res.json(new ApiResponse(200, null, "User not found"));
 
-            
+
         } catch (error) {
             console.log("Error", error);
-            return res.json(new ApiError(500, INTERNAL_SERVER_ERROR, null)) 
+            return res.json(new ApiError(500, INTERNAL_SERVER_ERROR, null))
         }
     }
 
-    const updateUser = async (req,res)=>{
+    const updateUser = async (req, res) => {
         try {
-            const {id} = req.params;
+            const { id } = req.params;
             const userData = req.body;
-            const data = await userModal.findByIdAndUpdate(userData.id,userData, { new: true, runValidators: true });
+            const data = await userModal.findByIdAndUpdate(userData.id, userData, { new: true, runValidators: true });
 
-            if(data){
-                return res.json(new ApiResponse(201, data,"User updated"));
+            if (data) {
+                return res.json(new ApiResponse(201, data, "User updated"));
             };
 
-            return res.json(new ApiResponse(200,null,"User not found"))
+            return res.json(new ApiResponse(200, null, "User not found"))
 
         } catch (error) {
             console.log("Error", error);
-            return res.json(new ApiError(500, INTERNAL_SERVER_ERROR, null)) 
+            return res.json(new ApiError(500, INTERNAL_SERVER_ERROR, null))
         }
     }
 }
-module.exports = { signUpUserHandler, loginUserHandler, updateUser, refreshToken };
+module.exports = { signUpUserHandler, loginUserHandler, updateUser, refreshToken, getAllCustomer };

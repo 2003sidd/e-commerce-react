@@ -38,9 +38,9 @@ const Header = () => {
           <li className='font-medium'>
             <NavLink to='/'>Home</NavLink >
           </li>
-          {userDetails?.isAdmin == 1 && <li className='font-medium'>
+         <li className='font-medium'>
             <NavLink to='/admin'>Admin</NavLink >
-          </li>}
+          </li>
           {/* <li id="listitem3">
           <NavLink  to='/shop'>Shop Now</NavLink >
         </li> */}
